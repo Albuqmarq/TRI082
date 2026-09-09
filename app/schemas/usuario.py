@@ -2,9 +2,21 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.enums import Papel
+
+
+class UsuarioCriar(BaseModel):
+    nome_usuario: str = Field(min_length=1)
+    senha: str = Field(min_length=6)
+    papel: Papel
+
+
+class UsuarioAtualizar(BaseModel):
+    papel: Papel | None = None
+    senha: str | None = Field(default=None, min_length=6)
+    ativo: bool | None = None
 
 
 class UsuarioResposta(BaseModel):

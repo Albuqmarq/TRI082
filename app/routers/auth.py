@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import obter_sessao
-from app.models.usuario import Usuario
+from app.normalizacao import normalizar_nome_usuario
+from app.repositorios import usuarios as repositorio
 from app.schemas.auth import LoginRequisicao, TokenResposta
 from app.seguranca import criar_token_acesso, verificar_senha
 
@@ -13,11 +14,8 @@ roteador = APIRouter(prefix="/auth", tags=["Autenticacao"])
 
 @roteador.post("/login", response_model=TokenResposta)
 def login(dados: LoginRequisicao, sessao: Session = Depends(obter_sessao)):
-    usuario = (
-        sessao.query(Usuario)
-        .filter(Usuario.nome_usuario == dados.nome_usuario)
-        .first()
-    )
+    nome = normalizar_nome_usuario(dados.nome_usuario)
+    usuario = repositorio.obter_por_nome(sessao, nome)
     if usuario is None or not verificar_senha(dados.senha, usuario.senha_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
