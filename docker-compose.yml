@@ -1,0 +1,18 @@
+# sobe um PostgreSQL em container para a API se conectar
+
+
+services:
+  banco:
+    image: postgres:16
+    container_name: tri082_postgres
+    environment:
+      POSTGRES_USER: tri082
+      POSTGRES_PASSWORD: tri082_dev
+      POSTGRES_DB: tri082
+    ports:
+      - "5432:5432"
+    volumes:
+      - dados_postgres:/var/lib/postgresql/data
+
+volumes:
+  dados_postgres:
