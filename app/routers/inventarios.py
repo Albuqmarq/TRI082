@@ -6,7 +6,12 @@ from sqlalchemy.orm import Session
 from app.database import obter_sessao
 from app.dependencias import obter_usuario_atual
 from app.models.usuario import Usuario
-from app.schemas.inventario import LeituraCriar, LeituraResposta, SessaoResposta
+from app.schemas.inventario import (
+    LeituraCriar,
+    LeituraResposta,
+    ResultadoInventario,
+    SessaoResposta,
+)
 from app.servicos import inventario as servico
 
 roteador = APIRouter(prefix="/inventarios", tags=["Inventarios"])
@@ -58,3 +63,21 @@ def listar_leituras(
     usuario_atual: Usuario = Depends(obter_usuario_atual),
 ):
     return servico.listar_leituras(sessao, inventario_id)
+
+
+@roteador.post("/{inventario_id}/finalizar", response_model=ResultadoInventario)
+def finalizar(
+    inventario_id: int,
+    sessao: Session = Depends(obter_sessao),
+    usuario_atual: Usuario = Depends(obter_usuario_atual),
+):
+    return servico.finalizar_sessao(sessao, inventario_id, usuario_atual.id)
+
+
+@roteador.get("/{inventario_id}/resultado", response_model=ResultadoInventario)
+def resultado(
+    inventario_id: int,
+    sessao: Session = Depends(obter_sessao),
+    usuario_atual: Usuario = Depends(obter_usuario_atual),
+):
+    return servico.calcular_resultado(sessao, inventario_id)

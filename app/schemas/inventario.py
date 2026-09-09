@@ -35,3 +35,48 @@ class LeituraResposta(BaseModel):
     timestamp: datetime
     dispositivo: str | None
     operador_id: int
+
+
+class ItemResumo(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    epc: str
+    nome: str
+    categoria: str
+    tipo: str
+    cor: str | None
+    fornecedor: str | None
+
+
+class LeituraResumo(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    epc: str
+    timestamp: datetime
+    dispositivo: str | None
+
+
+class ResumoContagem(BaseModel):
+    total_esperado: int
+    total_encontrados: int
+    total_ausentes: int
+    total_nao_identificados: int
+
+
+class ResultadoInventario(BaseModel):
+    sessao_id: int
+    status: StatusSessao
+    data_inicio: datetime
+    data_fim: datetime | None
+    resumo: ResumoContagem
+    esperados_encontrados: list[ItemResumo]
+    esperados_ausentes: list[ItemResumo]
+    nao_identificados: list[LeituraResumo]
+
+
+class PendenciaResposta(BaseModel):
+    epc: str
+    ocorrencias: int
+    ultima_leitura: datetime

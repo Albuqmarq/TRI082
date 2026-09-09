@@ -2,7 +2,17 @@
 
 from sqlalchemy.orm import Session
 
+from app.enums import StatusLeitura
 from app.models.leitura import Leitura
+
+
+def listar_nao_identificadas(sessao: Session) -> list[Leitura]:
+    return (
+        sessao.query(Leitura)
+        .filter(Leitura.status == StatusLeitura.nao_identificado.value)
+        .order_by(Leitura.timestamp.desc())
+        .all()
+    )
 
 
 def obter_por_sessao_e_epc(sessao: Session, inventario_id: int, epc: str) -> Leitura | None:

@@ -1,4 +1,6 @@
-# Regras de negocio do inventario: abertura de sessao, registro de leitura com resolucao automatica de item e deduplicacao.
+# Regras de negocio do inventario: abertura de sessao, registro de leitura, finalizacao, calculo de resultado e pendencias.
+
+from datetime import datetime, timezone
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -70,3 +72,75 @@ def registrar_leitura(
 def listar_leituras(sessao: Session, inventario_id: int) -> list[Leitura]:
     obter_sessao_inventario(sessao, inventario_id)
     return repositorio_leituras.listar_por_sessao(sessao, inventario_id)
+
+
+def calcular_resultado(sessao: Session, inventario_id: int) -> dict:
+    inventario = obter_sessao_inventario(sessao, inventario_id)
+    itens_ativos = repositorio_itens.listar_ativos(sessao)
+    leituras = repositorio_leituras.listar_por_sessao(sessao, inventario_id)
+
+    ids_encontrados = set()
+    nao_identificados = []
+    for leitura in leituras:
+        if leitura.status == StatusLeitura.encontrado.value and leitura.item_id is not None:
+            ids_encontrados.add(leitura.item_id)
+        elif leitura.status == StatusLeitura.nao_identificado.value:
+            nao_identificados.append(leitura)
+
+    esperados_encontrados = []
+    esperados_ausentes = []
+    for item in itens_ativos:
+        if item.id in ids_encontrados:
+            esperados_encontrados.append(item)
+        else:
+            esperados_ausentes.append(item)
+
+    resumo = {
+        "total_esperado": len(itens_ativos),
+        "total_encontrados": len(esperados_encontrados),
+        "total_ausentes": len(esperados_ausentes),
+        "total_nao_identificados": len(nao_identificados),
+    }
+    return {
+        "sessao_id": inventario.id,
+        "status": inventario.status,
+        "data_inicio": inventario.data_inicio,
+        "data_fim": inventario.data_fim,
+        "resumo": resumo,
+        "esperados_encontrados": esperados_encontrados,
+        "esperados_ausentes": esperados_ausentes,
+        "nao_identificados": nao_identificados,
+    }
+
+
+def finalizar_sessao(sessao: Session, inventario_id: int, finalizado_por: int) -> dict:
+    inventario = obter_sessao_inventario(sessao, inventario_id)
+    if inventario.status == StatusSessao.finalizada.value:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A sessao de inventario ja foi finalizada",
+        )
+    inventario.status = StatusSessao.finalizada.value
+    inventario.data_fim = datetime.now(timezone.utc)
+    inventario.finalizado_por = finalizado_por
+    repositorio_sessoes.salvar(sessao, inventario)
+    return calcular_resultado(sessao, inventario_id)
+
+
+def listar_pendencias(sessao: Session) -> list[dict]:
+    leituras = repositorio_leituras.listar_nao_identificadas(sessao)
+    agrupado: dict[str, dict] = {}
+    for leitura in leituras:
+        item = repositorio_itens.obter_por_epc(sessao, leitura.epc)
+        if item is not None and item.status == StatusItem.ativo.value:
+            continue
+        if leitura.epc not in agrupado:
+            agrupado[leitura.epc] = {
+                "epc": leitura.epc,
+                "ocorrencias": 0,
+                "ultima_leitura": leitura.timestamp,
+            }
+        agrupado[leitura.epc]["ocorrencias"] += 1
+        if leitura.timestamp > agrupado[leitura.epc]["ultima_leitura"]:
+            agrupado[leitura.epc]["ultima_leitura"] = leitura.timestamp
+    return list(agrupado.values())
