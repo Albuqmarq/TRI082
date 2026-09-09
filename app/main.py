@@ -1,12 +1,16 @@
-# Ponto de entrada da API FastAPI. Cria a aplicacao e expoe uma verificacao de saude que testa o banco
+# Ponto de entrada da API FastAPI. Cria a aplicacao, registra as rotas e expoe uma verificacao de saude
 
 from fastapi import Depends, FastAPI
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.database import obter_sessao
+from app.routers import auth, usuarios
 
 app = FastAPI(title="API de Inventario RFID TRI082", version="0.1.0")
+
+app.include_router(auth.roteador)
+app.include_router(usuarios.roteador)
 
 
 @app.get("/saude", tags=["Saude"])
