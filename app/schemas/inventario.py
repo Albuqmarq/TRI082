@@ -1,0 +1,37 @@
+# Schemas de inventario: formato das sessoes e das leituras recebidas e devolvidas pela API.
+
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.enums import StatusLeitura, StatusSessao
+
+
+class SessaoResposta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    status: StatusSessao
+    data_inicio: datetime
+    data_fim: datetime | None
+    criado_por: int
+    finalizado_por: int | None
+
+
+class LeituraCriar(BaseModel):
+    epc: str = Field(min_length=1)
+    timestamp: datetime | None = None
+    dispositivo: str | None = None
+
+
+class LeituraResposta(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    sessao_id: int
+    epc: str
+    item_id: int | None
+    status: StatusLeitura
+    timestamp: datetime
+    dispositivo: str | None
+    operador_id: int
