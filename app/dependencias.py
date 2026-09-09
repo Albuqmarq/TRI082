@@ -6,6 +6,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from app.database import obter_sessao
+from app.enums import Papel
 from app.models.usuario import Usuario
 from app.seguranca import decodificar_token
 
@@ -30,3 +31,12 @@ def obter_usuario_atual(
     if usuario is None or not usuario.ativo:
         raise erro_credenciais
     return usuario
+
+
+def exigir_admin(usuario_atual: Usuario = Depends(obter_usuario_atual)) -> Usuario:
+    if usuario_atual.papel != Papel.admin.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acesso restrito a administradores",
+        )
+    return usuario_atual
