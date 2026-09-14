@@ -13,3 +13,6 @@ __pycache__/
 
 # Cache de testes
 .pytest_cache/
+
+# Registros pessoais de desenvolvimento (fora do repositorio)
+registros/
