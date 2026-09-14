@@ -1,0 +1,9 @@
+# Arquivos de build e configuracao local do projeto Android
+.gradle/
+build/
+app/build/
+local.properties
+.idea/
+*.iml
+captures/
+.cxx/

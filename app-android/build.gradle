@@ -1,0 +1,5 @@
+// Configuracao raiz do projeto Android. Declara o plugin do Android usado pelo modulo app.
+
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
+}

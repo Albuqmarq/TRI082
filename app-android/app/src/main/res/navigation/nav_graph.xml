@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/painelFragment">
+
+    <fragment
+        android:id="@+id/painelFragment"
+        android:name="com.tri082.inventario.ui.PainelFragment"
+        android:label="@string/titulo_painel" />
+    <fragment
+        android:id="@+id/leituraFragment"
+        android:name="com.tri082.inventario.ui.LeituraFragment"
+        android:label="@string/titulo_leitura" />
+    <fragment
+        android:id="@+id/catalogoFragment"
+        android:name="com.tri082.inventario.ui.CatalogoFragment"
+        android:label="@string/titulo_catalogo" />
+    <fragment
+        android:id="@+id/inventarioFragment"
+        android:name="com.tri082.inventario.ui.InventarioFragment"
+        android:label="@string/titulo_inventario" />
+    <fragment
+        android:id="@+id/localizarFragment"
+        android:name="com.tri082.inventario.ui.LocalizarFragment"
+        android:label="@string/titulo_localizar" />
+
+</navigation>

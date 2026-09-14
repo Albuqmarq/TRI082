@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/painelFragment"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="@string/titulo_painel" />
+    <item
+        android:id="@+id/leituraFragment"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/titulo_leitura" />
+    <item
+        android:id="@+id/catalogoFragment"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="@string/titulo_catalogo" />
+    <item
+        android:id="@+id/inventarioFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/titulo_inventario" />
+    <item
+        android:id="@+id/localizarFragment"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:title="@string/titulo_localizar" />
+
+</menu>

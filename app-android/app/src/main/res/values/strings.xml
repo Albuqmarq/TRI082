@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Inventario TRI082</string>
+    <string name="titulo_painel">Painel</string>
+    <string name="titulo_leitura">Leitura</string>
+    <string name="titulo_catalogo">Catalogo</string>
+    <string name="titulo_inventario">Inventario</string>
+    <string name="titulo_localizar">Localizar</string>
+</resources>
