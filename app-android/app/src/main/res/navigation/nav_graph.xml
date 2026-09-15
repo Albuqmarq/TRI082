@@ -24,5 +24,9 @@
         android:id="@+id/localizarFragment"
         android:name="com.tri082.inventario.ui.LocalizarFragment"
         android:label="@string/titulo_localizar" />
+    <fragment
+        android:id="@+id/configuracoesFragment"
+        android:name="com.tri082.inventario.ui.ConfiguracoesFragment"
+        android:label="@string/titulo_configuracoes" />
 
 </navigation>

@@ -6,4 +6,15 @@
     <string name="titulo_catalogo">Catalogo</string>
     <string name="titulo_inventario">Inventario</string>
     <string name="titulo_localizar">Localizar</string>
+    <string name="titulo_configuracoes">Configuracoes</string>
+
+    <string name="config_titulo">Endereco da API</string>
+    <string name="config_ip">IP do servidor</string>
+    <string name="config_ip_dica">ex: 192.168.0.10</string>
+    <string name="config_porta">Porta</string>
+    <string name="config_porta_dica">ex: 8000</string>
+    <string name="config_salvar">Salvar</string>
+    <string name="config_salvo">Endereco salvo: %1$s</string>
+    <string name="config_erro_ip">Informe o IP do servidor</string>
+    <string name="config_erro_porta">Porta invalida (1 a 65535)</string>
 </resources>
