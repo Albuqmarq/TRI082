@@ -1,8 +1,9 @@
-// Tela principal que hospeda a navegacao por abas do aplicativo.
+// Tela principal que hospeda a navegacao por abas e esconde as abas nas telas de login e configuracoes.
 
 package com.tri082.inventario.ui;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -24,5 +25,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         NavigationUI.setupWithNavController(bottomNav, navController);
+
+        navController.addOnDestinationChangedListener((controlador, destino, argumentos) -> {
+            int id = destino.getId();
+            boolean semAbas = id == R.id.loginFragment || id == R.id.configuracoesFragment;
+            bottomNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);
+        });
     }
 }

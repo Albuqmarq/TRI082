@@ -17,4 +17,16 @@
     <string name="config_salvo">Endereco salvo: %1$s</string>
     <string name="config_erro_ip">Informe o IP do servidor</string>
     <string name="config_erro_porta">Porta invalida (1 a 65535)</string>
+
+    <string name="login_titulo">Entrar</string>
+    <string name="login_usuario">Usuario</string>
+    <string name="login_senha">Senha</string>
+    <string name="login_entrar">Entrar</string>
+    <string name="login_configurar">Configurar servidor</string>
+    <string name="login_erro_campos">Informe o usuario e a senha</string>
+    <string name="login_erro_config">Configure o endereco do servidor primeiro</string>
+    <string name="login_erro_credenciais">Usuario ou senha invalidos</string>
+    <string name="login_erro_conexao">Falha de conexao com a API. Verifique o endereco e a rede.</string>
+    <string name="login_erro_perfil">Conectado, mas nao foi possivel carregar o perfil.</string>
+    <string name="login_erro_generico">Nao foi possivel entrar. Codigo %1$d</string>
 </resources>
