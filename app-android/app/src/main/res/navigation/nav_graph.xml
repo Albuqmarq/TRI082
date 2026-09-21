@@ -39,5 +39,13 @@
         android:id="@+id/configuracoesFragment"
         android:name="com.tri082.inventario.ui.ConfiguracoesFragment"
         android:label="@string/titulo_configuracoes" />
+    <fragment
+        android:id="@+id/itemDetalheFragment"
+        android:name="com.tri082.inventario.ui.ItemDetalheFragment"
+        android:label="@string/titulo_catalogo" />
+    <fragment
+        android:id="@+id/itemFormFragment"
+        android:name="com.tri082.inventario.ui.ItemFormFragment"
+        android:label="@string/titulo_catalogo" />
 
 </navigation>

@@ -30,4 +30,36 @@
     <string name="login_erro_conexao">Falha de conexao com a API. Verifique o endereco e a rede.</string>
     <string name="login_erro_perfil">Conectado, mas nao foi possivel carregar o perfil.</string>
     <string name="login_erro_generico">Nao foi possivel entrar. Codigo %1$d</string>
+
+    <string name="catalogo_buscar">Buscar por nome</string>
+    <string name="catalogo_novo">Novo item</string>
+    <string name="catalogo_vazio">Nenhum item encontrado</string>
+    <string name="catalogo_erro_carregar">Nao foi possivel carregar os itens</string>
+    <string name="catalogo_erro_salvar">Nao foi possivel concluir a operacao</string>
+
+    <string name="detalhe_epc">EPC: %1$s</string>
+    <string name="detalhe_categoria">Categoria: %1$s</string>
+    <string name="detalhe_tipo">Tipo: %1$s</string>
+    <string name="detalhe_cor">Cor: %1$s</string>
+    <string name="detalhe_fornecedor">Fornecedor: %1$s</string>
+    <string name="detalhe_editar">Editar</string>
+    <string name="detalhe_excluir">Excluir</string>
+    <string name="detalhe_cancelar">Cancelar</string>
+    <string name="detalhe_confirmar_exclusao">Excluir este item?</string>
+    <string name="detalhe_excluido">Item excluido</string>
+
+    <string name="form_titulo_novo">Novo item</string>
+    <string name="form_titulo_editar">Editar item</string>
+    <string name="form_epc">EPC</string>
+    <string name="form_nome">Nome</string>
+    <string name="form_categoria">Categoria</string>
+    <string name="form_tipo">Tipo</string>
+    <string name="form_cor">Cor</string>
+    <string name="form_fornecedor">Fornecedor</string>
+    <string name="form_reaproveitar">Reaproveitar ultimo item</string>
+    <string name="form_salvar">Salvar</string>
+    <string name="form_erro_campos">Preencha EPC, nome, categoria e tipo</string>
+    <string name="form_erro_epc">Ja existe um item com esse EPC</string>
+    <string name="form_salvo">Item salvo</string>
+    <string name="form_sem_recomendacao">Nenhum item recente para reaproveitar</string>
 </resources>

@@ -62,6 +62,10 @@ public final class Sessao {
         return token != null && !token.isEmpty();
     }
 
+    public static boolean ehAdmin() {
+        return "admin".equals(papel);
+    }
+
     public static void limpar() {
         token = null;
         papel = null;
