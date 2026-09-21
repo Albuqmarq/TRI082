@@ -24,6 +24,12 @@ public class InterceptadorToken implements Interceptor {
                     .header("Authorization", "Bearer " + Sessao.getToken())
                     .build();
         }
-        return chain.proceed(requisicao);
+
+        Response resposta = chain.proceed(requisicao);
+        if (!ehLogin && resposta.code() == 401) {
+            Sessao.limpar();
+            Sessao.notificarExpiracao();
+        }
+        return resposta;
     }
 }

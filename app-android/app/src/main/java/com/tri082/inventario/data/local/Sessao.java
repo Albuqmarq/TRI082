@@ -4,6 +4,8 @@ package com.tri082.inventario.data.local;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
@@ -20,6 +22,7 @@ public final class Sessao {
     private static SharedPreferences prefs;
     private static String token;
     private static String papel;
+    private static Runnable aoExpirar;
 
     private Sessao() {
     }
@@ -64,6 +67,17 @@ public final class Sessao {
         papel = null;
         if (prefs != null) {
             prefs.edit().clear().apply();
+        }
+    }
+
+    public static void definirAoExpirar(Runnable acao) {
+        aoExpirar = acao;
+    }
+
+    public static void notificarExpiracao() {
+        Runnable acao = aoExpirar;
+        if (acao != null) {
+            new Handler(Looper.getMainLooper()).post(acao);
         }
     }
 
