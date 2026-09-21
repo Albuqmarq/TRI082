@@ -7,6 +7,7 @@
     <string name="titulo_inventario">Inventario</string>
     <string name="titulo_localizar">Localizar</string>
     <string name="titulo_configuracoes">Configuracoes</string>
+    <string name="painel_sair">Sair</string>
 
     <string name="config_titulo">Endereco da API</string>
     <string name="config_ip">IP do servidor</string>

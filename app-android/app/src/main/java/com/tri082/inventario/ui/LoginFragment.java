@@ -51,6 +51,14 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (Sessao.ativa()) {
+            NavHostFragment.findNavController(this).navigate(R.id.acao_login_para_painel);
+        }
+    }
+
     private void entrar() {
         String usuario = campoUsuario.getText().toString().trim();
         String senha = campoSenha.getText().toString();
