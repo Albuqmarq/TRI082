@@ -56,7 +56,7 @@
     <string name="form_tipo">Tipo</string>
     <string name="form_cor">Cor</string>
     <string name="form_fornecedor">Fornecedor</string>
-    <string name="form_reaproveitar">Reaproveitar ultimo item</string>
+    <string name="form_recomendar">Ou reaproveite um item recente:</string>
     <string name="form_salvar">Salvar</string>
     <string name="form_erro_campos">Preencha EPC, nome, categoria e tipo</string>
     <string name="form_erro_epc">Ja existe um item com esse EPC</string>

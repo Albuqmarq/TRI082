@@ -1,4 +1,4 @@
-// Tela de cadastro e edicao de item (somente Administrador). No cadastro, permite reaproveitar o ultimo item.
+// Tela de cadastro e edicao de item (somente Administrador). No cadastro, sugere os ultimos itens para reaproveitar.
 
 package com.tri082.inventario.ui;
 
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,8 @@ import retrofit2.Response;
 
 public class ItemFormFragment extends Fragment {
 
+    private static final int MAXIMO_RECOMENDACOES = 3;
+
     private int itemId;
     private boolean edicao;
     private EditText campoEpc;
@@ -40,6 +43,8 @@ public class ItemFormFragment extends Fragment {
     private EditText campoCor;
     private EditText campoFornecedor;
     private Button botaoSalvar;
+    private TextView textoRecomendar;
+    private LinearLayout containerRecomendacoes;
 
     @Nullable
     @Override
@@ -56,17 +61,17 @@ public class ItemFormFragment extends Fragment {
         campoCor = view.findViewById(R.id.campo_cor);
         campoFornecedor = view.findViewById(R.id.campo_fornecedor);
         botaoSalvar = view.findViewById(R.id.botao_salvar);
-        Button botaoReaproveitar = view.findViewById(R.id.botao_reaproveitar);
+        textoRecomendar = view.findViewById(R.id.texto_recomendar);
+        containerRecomendacoes = view.findViewById(R.id.container_recomendacoes);
         TextView titulo = view.findViewById(R.id.form_titulo);
 
         if (edicao) {
             titulo.setText(R.string.form_titulo_editar);
             campoEpc.setVisibility(View.GONE);
-            botaoReaproveitar.setVisibility(View.GONE);
             carregarItem();
         } else {
             titulo.setText(R.string.form_titulo_novo);
-            botaoReaproveitar.setOnClickListener(v -> reaproveitar());
+            carregarRecomendacoes();
         }
 
         botaoSalvar.setOnClickListener(v -> salvar());
@@ -89,25 +94,45 @@ public class ItemFormFragment extends Fragment {
         });
     }
 
-    private void reaproveitar() {
+    private void carregarRecomendacoes() {
         ApiService servico = ClienteApi.criarServico(requireContext());
         servico.obterRecomendacao().enqueue(new Callback<List<Item>>() {
             @Override
             public void onResponse(@NonNull Call<List<Item>> call, @NonNull Response<List<Item>> resposta) {
-                if (!isAdded()) {
+                if (!isAdded() || resposta.body() == null || resposta.body().isEmpty()) {
                     return;
                 }
-                if (resposta.isSuccessful() && resposta.body() != null && !resposta.body().isEmpty()) {
-                    preencher(resposta.body().get(0));
-                } else {
-                    Toast.makeText(requireContext(), R.string.form_sem_recomendacao, Toast.LENGTH_SHORT).show();
-                }
+                mostrarRecomendacoes(resposta.body());
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Item>> call, @NonNull Throwable erro) {
             }
         });
+    }
+
+    private void mostrarRecomendacoes(List<Item> itens) {
+        containerRecomendacoes.removeAllViews();
+        int total = Math.min(itens.size(), MAXIMO_RECOMENDACOES);
+        for (int i = 0; i < total; i++) {
+            Item item = itens.get(i);
+            Button atalho = new Button(requireContext());
+            atalho.setAllCaps(false);
+            atalho.setText(descrever(item));
+            atalho.setOnClickListener(v -> preencher(item));
+            containerRecomendacoes.addView(atalho);
+        }
+        textoRecomendar.setVisibility(View.VISIBLE);
+        containerRecomendacoes.setVisibility(View.VISIBLE);
+    }
+
+    private String descrever(Item item) {
+        StringBuilder texto = new StringBuilder(item.getNome());
+        texto.append(" - ").append(item.getTipo());
+        if (item.getCor() != null && !item.getCor().isEmpty()) {
+            texto.append(" - ").append(item.getCor());
+        }
+        return texto.toString();
     }
 
     private void preencher(Item item) {
