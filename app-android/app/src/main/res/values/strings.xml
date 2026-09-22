@@ -62,4 +62,12 @@
     <string name="form_erro_epc">Ja existe um item com esse EPC</string>
     <string name="form_salvo">Item salvo</string>
     <string name="form_sem_recomendacao">Nenhum item recente para reaproveitar</string>
+
+    <string name="leitura_status_verificando">Verificando o leitor...</string>
+    <string name="leitura_status_pronto">Leitor pronto. Use o gatilho do coletor ou o botao para ler.</string>
+    <string name="leitura_status_indisponivel">Leitor RFID nao disponivel neste aparelho. Rode no coletor DT50P.</string>
+    <string name="leitura_iniciar">Iniciar leitura</string>
+    <string name="leitura_parar">Parar</string>
+    <string name="leitura_contagem">Tags lidas: %1$d</string>
+    <string name="leitura_sinal">Sinal: %1$d</string>
 </resources>

@@ -3,6 +3,7 @@
 package com.tri082.inventario.ui;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +23,43 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final Set<Integer> TECLAS_GATILHO =
+            new HashSet<>(Arrays.asList(293, 294, 520, 521, 522));
+
     private NavController navController;
     private AppBarConfiguration configuracaoBarra;
+    private Runnable gatilhoApertar;
+    private Runnable gatilhoSoltar;
+
+    public void registrarGatilho(Runnable apertar, Runnable soltar) {
+        this.gatilhoApertar = apertar;
+        this.gatilhoSoltar = soltar;
+    }
+
+    public void removerGatilho() {
+        this.gatilhoApertar = null;
+        this.gatilhoSoltar = null;
+    }
+
+    @Override
+    public boolean onKeyDown(int codigo, KeyEvent evento) {
+        if (gatilhoApertar != null && TECLAS_GATILHO.contains(codigo)) {
+            if (evento.getRepeatCount() == 0) {
+                gatilhoApertar.run();
+            }
+            return true;
+        }
+        return super.onKeyDown(codigo, evento);
+    }
+
+    @Override
+    public boolean onKeyUp(int codigo, KeyEvent evento) {
+        if (gatilhoSoltar != null && TECLAS_GATILHO.contains(codigo)) {
+            gatilhoSoltar.run();
+            return true;
+        }
+        return super.onKeyUp(codigo, evento);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
