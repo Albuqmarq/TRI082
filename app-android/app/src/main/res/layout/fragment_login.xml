@@ -6,12 +6,13 @@
     android:gravity="center"
     android:padding="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:text="@string/login_titulo"
-        android:textSize="24sp"
-        android:paddingBottom="24dp" />
+        android:layout_marginBottom="32dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/logo_tri" />
 
     <EditText
         android:id="@+id/campo_usuario"
@@ -35,11 +36,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:textColor="#C62828"
+        android:textColor="@color/erro"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/botao_entrar"
+        style="@style/Botao.Principal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

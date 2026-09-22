@@ -81,6 +81,7 @@
 
         <Button
             android:id="@+id/botao_salvar"
+            style="@style/Botao.Principal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
