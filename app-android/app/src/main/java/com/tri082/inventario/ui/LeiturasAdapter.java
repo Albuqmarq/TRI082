@@ -1,4 +1,4 @@
-// Adaptador da lista de tags lidas na tela de leitura.
+// Adaptador da lista de tags lidas: mostra o nome do item (quando conhecido) ou o EPC, e a contagem de leituras.
 
 package com.tri082.inventario.ui;
 
@@ -11,36 +11,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tri082.inventario.R;
+import com.tri082.inventario.data.local.EstadoLeitura;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segurador> {
 
-    private static class Leitura {
-        final String epc;
-        final int sinal;
+    private final List<EstadoLeitura.Registro> itens = new ArrayList<>();
+    private final Consumer<EstadoLeitura.Registro> aoClicar;
 
-        Leitura(String epc, int sinal) {
-            this.epc = epc;
-            this.sinal = sinal;
-        }
+    public LeiturasAdapter(Consumer<EstadoLeitura.Registro> aoClicar) {
+        this.aoClicar = aoClicar;
     }
 
-    private final List<Leitura> itens = new ArrayList<>();
-
-    public void adicionar(String epc, int sinal) {
-        itens.add(0, new Leitura(epc, sinal));
-        notifyItemInserted(0);
-    }
-
-    public void limpar() {
+    public void definir(List<EstadoLeitura.Registro> novos) {
         itens.clear();
+        itens.addAll(novos);
         notifyDataSetChanged();
-    }
-
-    public int total() {
-        return itens.size();
     }
 
     @NonNull
@@ -53,10 +42,18 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
 
     @Override
     public void onBindViewHolder(@NonNull Segurador segurador, int posicao) {
-        Leitura leitura = itens.get(posicao);
-        segurador.nome.setText(leitura.epc);
-        segurador.detalhe.setText(segurador.itemView.getContext()
-                .getString(R.string.leitura_sinal, leitura.sinal));
+        EstadoLeitura.Registro registro = itens.get(posicao);
+        View contexto = segurador.itemView;
+        boolean temNome = registro.nome != null && !registro.nome.isEmpty();
+        segurador.nome.setText(temNome ? registro.nome : registro.epc);
+        if (temNome) {
+            segurador.detalhe.setText(contexto.getContext()
+                    .getString(R.string.leitura_linha_com_nome, registro.epc, registro.contagem));
+        } else {
+            segurador.detalhe.setText(contexto.getContext()
+                    .getString(R.string.leitura_linha_sem_nome, registro.contagem));
+        }
+        segurador.itemView.setOnClickListener(v -> aoClicar.accept(registro));
     }
 
     @Override

@@ -18,13 +18,30 @@
         android:paddingBottom="8dp"
         android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/botao_ler"
-        style="@style/Botao.Principal"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/leitura_iniciar" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/botao_ler"
+            style="@style/Botao.Principal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/leitura_iniciar" />
+
+        <Button
+            android:id="@+id/botao_limpar"
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/leitura_limpar" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lista_leituras"

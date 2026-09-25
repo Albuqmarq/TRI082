@@ -1,4 +1,4 @@
-// Integracao com o SDK oficial da Urovo: inicializa o leitor, inicia e para a leitura continua e entrega as tags ja deduplicadas.
+// Integracao com o SDK oficial da Urovo: inicializa o leitor, inicia e para a leitura continua e entrega cada tag lida.
 // A leitura de tag so funciona no coletor fisico; em outros aparelhos o leitor fica indisponivel sem quebrar o app.
 
 package com.tri082.inventario.rfid;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.tri082.inventario.util.Deduplicador;
 import com.ubx.usdk.RFIDSDKManager;
 import com.ubx.usdk.rfid.RfidManager;
 import com.ubx.usdk.rfid.aidl.IRfidCallback;
@@ -21,7 +20,6 @@ public class LeitorRfid {
     }
 
     private final Handler principal = new Handler(Looper.getMainLooper());
-    private final Deduplicador deduplicador = new Deduplicador();
     private RfidManager rfidManager;
     private Ouvinte ouvinte;
 
@@ -31,13 +29,11 @@ public class LeitorRfid {
             if (epc == null || epc.isEmpty()) {
                 return;
             }
-            if (deduplicador.ehNova(epc)) {
-                principal.post(() -> {
-                    if (ouvinte != null) {
-                        ouvinte.aoLerTag(epc, sinal);
-                    }
-                });
-            }
+            principal.post(() -> {
+                if (ouvinte != null) {
+                    ouvinte.aoLerTag(epc, sinal);
+                }
+            });
         }
 
         @Override
@@ -76,7 +72,6 @@ public class LeitorRfid {
         if (rfidManager == null) {
             return;
         }
-        deduplicador.reiniciar();
         try {
             rfidManager.startInventory();
         } catch (Throwable ignorado) {

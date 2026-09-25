@@ -71,6 +71,11 @@ public class ItemFormFragment extends Fragment {
             carregarItem();
         } else {
             titulo.setText(R.string.form_titulo_novo);
+            String epcDaTag = getArguments() != null ? getArguments().getString("epc") : null;
+            if (epcDaTag != null && !epcDaTag.isEmpty()) {
+                campoEpc.setText(epcDaTag);
+                campoEpc.setEnabled(false);
+            }
             carregarRecomendacoes();
         }
 

@@ -26,6 +26,9 @@ public interface ApiService {
     @GET("itens/{id}")
     Call<Item> obterItem(@Path("id") int id);
 
+    @GET("itens/epc/{epc}")
+    Call<Item> obterItemPorEpc(@Path("epc") String epc);
+
     @GET("itens/recomendacao")
     Call<List<Item>> obterRecomendacao();
 
