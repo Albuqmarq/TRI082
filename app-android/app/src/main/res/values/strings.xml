@@ -73,5 +73,17 @@
     <string name="leitura_limpar">Limpar</string>
     <string name="leitura_epc_curto">EPC: %1$s</string>
     <string name="leitura_lida">lida %1$dx</string>
-    <string name="leitura_somente_admin">Somente o administrador cadastra itens</string>
+
+    <string name="inv_sem_sessao">Nenhum inventario em andamento.</string>
+    <string name="inv_iniciar">Iniciar inventario</string>
+    <string name="inv_em_andamento">Inventario em andamento. Va na aba Leitura, leia as tags e depois finalize aqui.</string>
+    <string name="inv_finalizar">Finalizar inventario</string>
+    <string name="inv_iniciado">Inventario iniciado</string>
+    <string name="inv_erro">Nao foi possivel concluir. Tente novamente.</string>
+    <string name="inv_resultado">Resultado</string>
+    <string name="inv_resumo">Esperados: %1$d - Encontrados: %2$d - Ausentes: %3$d - Nao identificados: %4$d</string>
+    <string name="inv_encontrados">Encontrados (%1$d)</string>
+    <string name="inv_ausentes">Ausentes (%1$d)</string>
+    <string name="inv_nao_identificados">Nao identificados (%1$d)</string>
+    <string name="inv_novo">Novo inventario</string>
 </resources>

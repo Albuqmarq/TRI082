@@ -40,4 +40,16 @@ public interface ApiService {
 
     @DELETE("itens/{id}")
     Call<Void> excluirItem(@Path("id") int id);
+
+    @POST("inventarios")
+    Call<SessaoResposta> criarSessao();
+
+    @POST("inventarios/{id}/leituras")
+    Call<Void> registrarLeitura(@Path("id") int id, @Body LeituraRequisicao leitura);
+
+    @POST("inventarios/{id}/finalizar")
+    Call<ResultadoInventario> finalizarInventario(@Path("id") int id);
+
+    @GET("inventarios/{id}/resultado")
+    Call<ResultadoInventario> obterResultado(@Path("id") int id);
 }

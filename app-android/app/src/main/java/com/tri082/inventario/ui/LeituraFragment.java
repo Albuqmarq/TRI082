@@ -23,9 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tri082.inventario.R;
 import com.tri082.inventario.data.local.EstadoLeitura;
 import com.tri082.inventario.data.local.Sessao;
+import com.tri082.inventario.data.local.SessaoInventario;
 import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Item;
+import com.tri082.inventario.data.remote.LeituraRequisicao;
 import com.tri082.inventario.rfid.LeitorRfid;
 
 import retrofit2.Call;
@@ -100,6 +102,9 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         agendarAtualizacao();
         if (nova) {
             resolverDados(epc);
+            if (SessaoInventario.ativa()) {
+                registrarNaSessao(epc);
+            }
         }
     }
 
@@ -138,20 +143,36 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
     }
 
     private void aoClicarTag(EstadoLeitura.Registro registro) {
-        if (registro.itemId != null) {
-            Bundle argumentos = new Bundle();
-            argumentos.putInt("itemId", registro.itemId);
-            NavHostFragment.findNavController(this).navigate(R.id.itemDetalheFragment, argumentos);
-            return;
-        }
         if (!Sessao.ehAdmin()) {
-            Toast.makeText(requireContext(), R.string.leitura_somente_admin, Toast.LENGTH_SHORT).show();
             return;
         }
         Bundle argumentos = new Bundle();
-        argumentos.putInt("itemId", -1);
-        argumentos.putString("epc", registro.epc);
-        NavHostFragment.findNavController(this).navigate(R.id.itemFormFragment, argumentos);
+        if (registro.itemId != null) {
+            argumentos.putInt("itemId", registro.itemId);
+            NavHostFragment.findNavController(this).navigate(R.id.itemDetalheFragment, argumentos);
+        } else {
+            argumentos.putInt("itemId", -1);
+            argumentos.putString("epc", registro.epc);
+            NavHostFragment.findNavController(this).navigate(R.id.itemFormFragment, argumentos);
+        }
+    }
+
+    private void registrarNaSessao(String epc) {
+        Integer id = SessaoInventario.getAtivo();
+        if (id == null) {
+            return;
+        }
+        ClienteApi.criarServico(requireContext())
+                .registrarLeitura(id, new LeituraRequisicao(epc, "DT50P"))
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> resposta) {
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable erro) {
+                    }
+                });
     }
 
     private void resolverNomesPendentes() {
