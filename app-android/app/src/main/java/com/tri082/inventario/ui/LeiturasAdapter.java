@@ -43,16 +43,31 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
     @Override
     public void onBindViewHolder(@NonNull Segurador segurador, int posicao) {
         EstadoLeitura.Registro registro = itens.get(posicao);
-        View contexto = segurador.itemView;
-        boolean temNome = registro.nome != null && !registro.nome.isEmpty();
-        segurador.nome.setText(temNome ? registro.nome : registro.epc);
-        if (temNome) {
-            segurador.detalhe.setText(contexto.getContext()
-                    .getString(R.string.leitura_linha_com_nome, registro.epc, registro.contagem));
+        android.content.Context contexto = segurador.itemView.getContext();
+        boolean cadastrada = registro.nome != null && !registro.nome.isEmpty();
+
+        segurador.nome.setText(cadastrada ? registro.nome : registro.epc);
+
+        StringBuilder detalhe = new StringBuilder();
+        if (cadastrada) {
+            if (registro.tipo != null && !registro.tipo.isEmpty()) {
+                detalhe.append(registro.tipo);
+            }
+            if (registro.cor != null && !registro.cor.isEmpty()) {
+                if (detalhe.length() > 0) {
+                    detalhe.append(" - ");
+                }
+                detalhe.append(registro.cor);
+            }
         } else {
-            segurador.detalhe.setText(contexto.getContext()
-                    .getString(R.string.leitura_linha_sem_nome, registro.contagem));
+            detalhe.append(contexto.getString(R.string.leitura_epc_curto, registro.epc));
         }
+        if (detalhe.length() > 0) {
+            detalhe.append(" - ");
+        }
+        detalhe.append(contexto.getString(R.string.leitura_lida, registro.contagem));
+        segurador.detalhe.setText(detalhe.toString());
+
         segurador.itemView.setOnClickListener(v -> aoClicar.accept(registro));
     }
 

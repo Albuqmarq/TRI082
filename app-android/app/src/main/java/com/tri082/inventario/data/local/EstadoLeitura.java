@@ -11,7 +11,10 @@ public final class EstadoLeitura {
 
     public static class Registro {
         public final String epc;
+        public Integer itemId;
         public String nome;
+        public String tipo;
+        public String cor;
         public int contagem;
 
         Registro(String epc) {
@@ -37,10 +40,13 @@ public final class EstadoLeitura {
         registro.contagem++;
     }
 
-    public static void definirNome(String epc, String nome) {
+    public static void definirDados(String epc, int itemId, String nome, String tipo, String cor) {
         Registro registro = mapa.get(epc);
         if (registro != null) {
+            registro.itemId = itemId;
             registro.nome = nome;
+            registro.tipo = tipo;
+            registro.cor = cor;
         }
     }
 

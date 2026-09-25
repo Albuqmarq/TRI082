@@ -99,7 +99,7 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         EstadoLeitura.registrar(epc);
         agendarAtualizacao();
         if (nova) {
-            resolverNome(epc);
+            resolverDados(epc);
         }
     }
 
@@ -138,9 +138,10 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
     }
 
     private void aoClicarTag(EstadoLeitura.Registro registro) {
-        if (registro.nome != null && !registro.nome.isEmpty()) {
-            Toast.makeText(requireContext(),
-                    getString(R.string.leitura_ja_cadastrado, registro.nome), Toast.LENGTH_SHORT).show();
+        if (registro.itemId != null) {
+            Bundle argumentos = new Bundle();
+            argumentos.putInt("itemId", registro.itemId);
+            NavHostFragment.findNavController(this).navigate(R.id.itemDetalheFragment, argumentos);
             return;
         }
         if (!Sessao.ehAdmin()) {
@@ -155,19 +156,20 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
 
     private void resolverNomesPendentes() {
         for (EstadoLeitura.Registro registro : EstadoLeitura.lista()) {
-            if (registro.nome == null) {
-                resolverNome(registro.epc);
+            if (registro.itemId == null) {
+                resolverDados(registro.epc);
             }
         }
     }
 
-    private void resolverNome(String epc) {
+    private void resolverDados(String epc) {
         ApiService servico = ClienteApi.criarServico(requireContext());
         servico.obterItemPorEpc(epc).enqueue(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> resposta) {
                 if (isAdded() && resposta.isSuccessful() && resposta.body() != null) {
-                    EstadoLeitura.definirNome(epc, resposta.body().getNome());
+                    Item item = resposta.body();
+                    EstadoLeitura.definirDados(epc, item.getId(), item.getNome(), item.getTipo(), item.getCor());
                     agendarAtualizacao();
                 }
             }

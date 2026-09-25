@@ -71,8 +71,7 @@
     <string name="leitura_contagem">Tags lidas: %1$d</string>
     <string name="leitura_sinal">Sinal: %1$d</string>
     <string name="leitura_limpar">Limpar</string>
-    <string name="leitura_linha_com_nome">EPC: %1$s - lida %2$dx</string>
-    <string name="leitura_linha_sem_nome">lida %1$dx</string>
-    <string name="leitura_ja_cadastrado">Ja cadastrado: %1$s</string>
+    <string name="leitura_epc_curto">EPC: %1$s</string>
+    <string name="leitura_lida">lida %1$dx</string>
     <string name="leitura_somente_admin">Somente o administrador cadastra itens</string>
 </resources>
