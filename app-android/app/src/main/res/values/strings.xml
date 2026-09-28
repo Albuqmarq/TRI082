@@ -8,6 +8,15 @@
     <string name="titulo_localizar">Localizar</string>
     <string name="titulo_configuracoes">Configuracoes</string>
     <string name="painel_sair">Sair</string>
+    <string name="painel_visao_geral">Visao geral</string>
+    <string name="painel_papel">Conectado como %1$s</string>
+    <string name="painel_papel_admin">Administrador</string>
+    <string name="painel_papel_funcionario">Funcionario</string>
+    <string name="painel_itens">Itens cadastrados</string>
+    <string name="painel_pendentes_envio">Pendentes de envio</string>
+    <string name="painel_pendencias_cadastro">Pendencias de cadastro (tags lidas sem item)</string>
+    <string name="painel_atalhos">Atalhos</string>
+    <string name="painel_novo_item">Cadastrar item</string>
 
     <string name="config_titulo">Endereco da API</string>
     <string name="config_ip">IP do servidor</string>

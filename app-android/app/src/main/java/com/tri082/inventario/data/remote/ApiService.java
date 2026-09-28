@@ -52,4 +52,7 @@ public interface ApiService {
 
     @GET("inventarios/{id}/resultado")
     Call<ResultadoInventario> obterResultado(@Path("id") int id);
+
+    @GET("pendencias")
+    Call<List<Pendencia>> listarPendencias();
 }
