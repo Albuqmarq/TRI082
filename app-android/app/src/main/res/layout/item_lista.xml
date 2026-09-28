@@ -20,4 +20,14 @@
         android:layout_height="wrap_content"
         android:textSize="13sp" />
 
+    <TextView
+        android:id="@+id/item_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/erro"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
 </LinearLayout>

@@ -16,6 +16,8 @@ public final class EstadoLeitura {
         public String tipo;
         public String cor;
         public int contagem;
+        public boolean resolvida;
+        public boolean cadastrada;
 
         Registro(String epc) {
             this.epc = epc;
@@ -47,6 +49,16 @@ public final class EstadoLeitura {
             registro.nome = nome;
             registro.tipo = tipo;
             registro.cor = cor;
+            registro.resolvida = true;
+            registro.cadastrada = true;
+        }
+    }
+
+    public static void definirNaoCadastrada(String epc) {
+        Registro registro = mapa.get(epc);
+        if (registro != null) {
+            registro.resolvida = true;
+            registro.cadastrada = false;
         }
     }
 
@@ -56,6 +68,10 @@ public final class EstadoLeitura {
 
     public static int totalTags() {
         return mapa.size();
+    }
+
+    public static void remover(String epc) {
+        mapa.remove(epc);
     }
 
     public static void limpar() {

@@ -21,9 +21,12 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
 
     private final List<EstadoLeitura.Registro> itens = new ArrayList<>();
     private final Consumer<EstadoLeitura.Registro> aoClicar;
+    private final Consumer<EstadoLeitura.Registro> aoSegurar;
 
-    public LeiturasAdapter(Consumer<EstadoLeitura.Registro> aoClicar) {
+    public LeiturasAdapter(Consumer<EstadoLeitura.Registro> aoClicar,
+                           Consumer<EstadoLeitura.Registro> aoSegurar) {
         this.aoClicar = aoClicar;
+        this.aoSegurar = aoSegurar;
     }
 
     public void definir(List<EstadoLeitura.Registro> novos) {
@@ -44,7 +47,7 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
     public void onBindViewHolder(@NonNull Segurador segurador, int posicao) {
         EstadoLeitura.Registro registro = itens.get(posicao);
         android.content.Context contexto = segurador.itemView.getContext();
-        boolean cadastrada = registro.nome != null && !registro.nome.isEmpty();
+        boolean cadastrada = registro.resolvida && registro.cadastrada;
 
         segurador.nome.setText(cadastrada ? registro.nome : registro.epc);
 
@@ -68,7 +71,20 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
         detalhe.append(contexto.getString(R.string.leitura_lida, registro.contagem));
         segurador.detalhe.setText(detalhe.toString());
 
+        if (!registro.resolvida) {
+            segurador.status.setVisibility(View.GONE);
+        } else if (!registro.cadastrada) {
+            segurador.status.setText(R.string.leitura_nao_cadastrada);
+            segurador.status.setVisibility(View.VISIBLE);
+        } else {
+            segurador.status.setVisibility(View.GONE);
+        }
+
         segurador.itemView.setOnClickListener(v -> aoClicar.accept(registro));
+        segurador.itemView.setOnLongClickListener(v -> {
+            aoSegurar.accept(registro);
+            return true;
+        });
     }
 
     @Override
@@ -79,11 +95,13 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
     static class Segurador extends RecyclerView.ViewHolder {
         final TextView nome;
         final TextView detalhe;
+        final TextView status;
 
         Segurador(View itemView) {
             super(itemView);
             nome = itemView.findViewById(R.id.item_nome);
             detalhe = itemView.findViewById(R.id.item_detalhe);
+            status = itemView.findViewById(R.id.item_status);
         }
     }
 }

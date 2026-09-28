@@ -74,6 +74,12 @@
     <string name="leitura_limpar">Limpar</string>
     <string name="leitura_epc_curto">EPC: %1$s</string>
     <string name="leitura_lida">lida %1$dx</string>
+    <string name="leitura_verificando">Verificando cadastro...</string>
+    <string name="leitura_nao_cadastrada">Tag nao cadastrada</string>
+    <string name="leitura_pendencia_registrada">Pendencia registrada</string>
+    <string name="leitura_remover_titulo">Remover leitura?</string>
+    <string name="leitura_remover_msg">A tag %1$s sai da lista. Isso nao apaga nenhum item cadastrado.</string>
+    <string name="leitura_remover_confirmar">Remover</string>
 
     <string name="inv_titulo_novo">Contagem de estoque</string>
     <string name="inv_sem_sessao">Inicie uma sessao para conferir o estoque. Depois leia as tags na aba Leitura e finalize aqui.</string>

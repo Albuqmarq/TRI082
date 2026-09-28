@@ -56,7 +56,7 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         botaoLer = view.findViewById(R.id.botao_ler);
         RecyclerView lista = view.findViewById(R.id.lista_leituras);
 
-        adapter = new LeiturasAdapter(this::aoClicarTag);
+        adapter = new LeiturasAdapter(this::aoClicarTag, this::aoSegurarTag);
         lista.setLayoutManager(new LinearLayoutManager(requireContext()));
         lista.setAdapter(adapter);
 
@@ -157,6 +157,18 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         }
     }
 
+    private void aoSegurarTag(EstadoLeitura.Registro registro) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle(R.string.leitura_remover_titulo)
+                .setMessage(getString(R.string.leitura_remover_msg, registro.epc))
+                .setPositiveButton(R.string.leitura_remover_confirmar, (d, w) -> {
+                    EstadoLeitura.remover(registro.epc);
+                    atualizarLista();
+                })
+                .setNegativeButton(R.string.detalhe_cancelar, null)
+                .show();
+    }
+
     private void registrarNaSessao(String epc) {
         Integer id = SessaoInventario.getAtivo();
         if (id == null) {
@@ -177,7 +189,7 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
 
     private void resolverNomesPendentes() {
         for (EstadoLeitura.Registro registro : EstadoLeitura.lista()) {
-            if (registro.itemId == null) {
+            if (!registro.resolvida) {
                 resolverDados(registro.epc);
             }
         }
@@ -188,17 +200,29 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         servico.obterItemPorEpc(epc).enqueue(new Callback<Item>() {
             @Override
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> resposta) {
-                if (isAdded() && resposta.isSuccessful() && resposta.body() != null) {
+                if (!isAdded()) {
+                    return;
+                }
+                if (resposta.isSuccessful() && resposta.body() != null) {
                     Item item = resposta.body();
                     EstadoLeitura.definirDados(epc, item.getId(), item.getNome(), item.getTipo(), item.getCor());
-                    agendarAtualizacao();
+                } else {
+                    EstadoLeitura.definirNaoCadastrada(epc);
+                    avisarPendencia();
                 }
+                agendarAtualizacao();
             }
 
             @Override
             public void onFailure(@NonNull Call<Item> call, @NonNull Throwable erro) {
             }
         });
+    }
+
+    private void avisarPendencia() {
+        if (isAdded() && !Sessao.ehAdmin() && SessaoInventario.ativa()) {
+            Toast.makeText(requireContext(), R.string.leitura_pendencia_registrada, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void agendarAtualizacao() {
