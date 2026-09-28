@@ -32,7 +32,10 @@ public class InventarioFragment extends Fragment {
     private View areaSemSessao;
     private View areaComSessao;
     private View areaResultado;
-    private TextView textoResumo;
+    private TextView valorEsperados;
+    private TextView valorEncontrados;
+    private TextView valorAusentes;
+    private TextView valorNaoId;
     private TextView textoEncontrados;
     private TextView textoAusentes;
     private TextView textoNaoId;
@@ -45,7 +48,10 @@ public class InventarioFragment extends Fragment {
         areaSemSessao = view.findViewById(R.id.area_sem_sessao);
         areaComSessao = view.findViewById(R.id.area_com_sessao);
         areaResultado = view.findViewById(R.id.area_resultado);
-        textoResumo = view.findViewById(R.id.texto_resumo);
+        valorEsperados = view.findViewById(R.id.valor_esperados);
+        valorEncontrados = view.findViewById(R.id.valor_encontrados);
+        valorAusentes = view.findViewById(R.id.valor_ausentes);
+        valorNaoId = view.findViewById(R.id.valor_naoid);
         textoEncontrados = view.findViewById(R.id.texto_encontrados);
         textoAusentes = view.findViewById(R.id.texto_ausentes);
         textoNaoId = view.findViewById(R.id.texto_nao_id);
@@ -146,8 +152,10 @@ public class InventarioFragment extends Fragment {
     private void mostrarResultado(ResultadoInventario resultado) {
         mostrarArea(areaResultado);
         ResultadoInventario.Resumo r = resultado.resumo;
-        textoResumo.setText(getString(R.string.inv_resumo,
-                r.totalEsperado, r.totalEncontrados, r.totalAusentes, r.totalNaoIdentificados));
+        valorEsperados.setText(String.valueOf(r.totalEsperado));
+        valorEncontrados.setText(String.valueOf(r.totalEncontrados));
+        valorAusentes.setText(String.valueOf(r.totalAusentes));
+        valorNaoId.setText(String.valueOf(r.totalNaoIdentificados));
         textoEncontrados.setText(getString(R.string.inv_encontrados, tamanho(resultado.esperadosEncontrados))
                 + "\n" + nomes(resultado.esperadosEncontrados));
         textoAusentes.setText(getString(R.string.inv_ausentes, tamanho(resultado.esperadosAusentes))

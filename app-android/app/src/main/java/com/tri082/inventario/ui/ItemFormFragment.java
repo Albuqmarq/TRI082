@@ -118,22 +118,22 @@ public class ItemFormFragment extends Fragment {
 
     private void mostrarRecomendacoes(List<Item> itens) {
         containerRecomendacoes.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         int total = Math.min(itens.size(), MAXIMO_RECOMENDACOES);
         for (int i = 0; i < total; i++) {
             Item item = itens.get(i);
-            Button atalho = new Button(requireContext());
-            atalho.setAllCaps(false);
-            atalho.setText(descrever(item));
-            atalho.setOnClickListener(v -> preencher(item));
-            containerRecomendacoes.addView(atalho);
+            View cartao = inflater.inflate(R.layout.item_recomendacao, containerRecomendacoes, false);
+            ((TextView) cartao.findViewById(R.id.rec_nome)).setText(item.getNome());
+            ((TextView) cartao.findViewById(R.id.rec_detalhe)).setText(descrever(item));
+            cartao.setOnClickListener(v -> preencher(item));
+            containerRecomendacoes.addView(cartao);
         }
         textoRecomendar.setVisibility(View.VISIBLE);
         containerRecomendacoes.setVisibility(View.VISIBLE);
     }
 
     private String descrever(Item item) {
-        StringBuilder texto = new StringBuilder(item.getNome());
-        texto.append(" - ").append(item.getTipo());
+        StringBuilder texto = new StringBuilder(item.getTipo());
         if (item.getCor() != null && !item.getCor().isEmpty()) {
             texto.append(" - ").append(item.getCor());
         }
