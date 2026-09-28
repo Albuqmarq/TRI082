@@ -85,7 +85,11 @@ def calcular_resultado(sessao: Session, inventario_id: int) -> dict:
         if leitura.status == StatusLeitura.encontrado.value and leitura.item_id is not None:
             ids_encontrados.add(leitura.item_id)
         elif leitura.status == StatusLeitura.nao_identificado.value:
-            nao_identificados.append(leitura)
+            item = repositorio_itens.obter_por_epc(sessao, leitura.epc)
+            if item is not None and item.status == StatusItem.ativo.value:
+                ids_encontrados.add(item.id)
+            else:
+                nao_identificados.append(leitura)
 
     esperados_encontrados = []
     esperados_ausentes = []
