@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.tri082.inventario.R;
+import com.tri082.inventario.data.local.Sessao;
 import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Item;
@@ -51,6 +52,13 @@ public class ItemFormFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_form, container, false);
+
+        if (!Sessao.ehAdmin()) {
+            Toast.makeText(requireContext(), R.string.acesso_restrito_admin, Toast.LENGTH_LONG).show();
+            NavHostFragment.findNavController(this).popBackStack();
+            return view;
+        }
+
         itemId = getArguments() != null ? getArguments().getInt("itemId", -1) : -1;
         edicao = itemId > 0;
 

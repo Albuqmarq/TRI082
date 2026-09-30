@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Inventario TRI082</string>
+    <string name="acesso_restrito_admin">Acesso restrito ao Administrador.</string>
     <string name="titulo_painel">Painel</string>
     <string name="titulo_leitura">Leitura</string>
     <string name="titulo_catalogo">Catalogo</string>
@@ -85,7 +86,7 @@
     <string name="leitura_lida">lida %1$dx</string>
     <string name="leitura_verificando">Verificando cadastro...</string>
     <string name="leitura_nao_cadastrada">Tag nao cadastrada</string>
-    <string name="leitura_pendencia_registrada">Pendencia registrada</string>
+    <string name="leitura_pendencia_registrada">Pendencia de cadastro registrada</string>
     <string name="leitura_remover_titulo">Remover leitura?</string>
     <string name="leitura_remover_msg">A tag %1$s sai da lista. Isso nao apaga nenhum item cadastrado.</string>
     <string name="leitura_remover_confirmar">Remover</string>
