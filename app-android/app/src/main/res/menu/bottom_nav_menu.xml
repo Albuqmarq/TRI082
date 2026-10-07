@@ -6,20 +6,20 @@
         android:icon="@drawable/ic_nav_painel"
         android:title="@string/titulo_painel" />
     <item
-        android:id="@+id/leituraFragment"
-        android:icon="@drawable/ic_nav_leitura"
-        android:title="@string/titulo_leitura" />
-    <item
-        android:id="@+id/catalogoFragment"
-        android:icon="@drawable/ic_nav_catalogo"
-        android:title="@string/titulo_catalogo" />
-    <item
         android:id="@+id/inventarioFragment"
         android:icon="@drawable/ic_nav_inventario"
         android:title="@string/titulo_inventario" />
     <item
+        android:id="@+id/leituraFragment"
+        android:icon="@drawable/ic_nav_leitura"
+        android:title="@string/titulo_leitura" />
+    <item
         android:id="@+id/localizarFragment"
         android:icon="@drawable/ic_nav_localizar"
         android:title="@string/titulo_localizar" />
+    <item
+        android:id="@+id/catalogoFragment"
+        android:icon="@drawable/ic_nav_catalogo"
+        android:title="@string/titulo_catalogo" />
 
 </menu>

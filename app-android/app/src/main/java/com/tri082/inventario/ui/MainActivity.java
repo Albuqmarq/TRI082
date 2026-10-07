@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     || id == R.id.itemDetalheFragment
                     || id == R.id.itemFormFragment
                     || id == R.id.pendenciasFragment
+                    || id == R.id.relatorioFragment
                     || id == R.id.usuariosFragment
                     || id == R.id.usuarioFormFragment;
             bottomNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);

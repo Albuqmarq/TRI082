@@ -1,4 +1,4 @@
-// Tela de leitura RFID: le pelo gatilho ou botao, mantem as leituras ao trocar de aba (limpa so no botao Limpar),
+// Tela de leitura RFID (tambem usada embutida no inventario em andamento): le pelo gatilho ou botao, mantem as leituras ao trocar de aba (limpa so no botao Limpar),
 // mostra o nome do item quando ja cadastrado e conta as leituras de cada tag (apoio de teste).
 
 package com.tri082.inventario.ui;
@@ -61,6 +61,9 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         textoFila = view.findViewById(R.id.texto_fila);
         view.findViewById(R.id.botao_sincronizar).setOnClickListener(v -> sincronizar());
         RecyclerView lista = view.findViewById(R.id.lista_leituras);
+        if (getArguments() != null && getArguments().getBoolean("embutida", false)) {
+            view.findViewById(R.id.leitura_titulo).setVisibility(View.GONE);
+        }
 
         adapter = new LeiturasAdapter(this::aoClicarTag, this::aoSegurarTag);
         lista.setLayoutManager(new LinearLayoutManager(requireContext()));

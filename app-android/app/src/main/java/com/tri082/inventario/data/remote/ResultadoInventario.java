@@ -1,4 +1,4 @@
-// Resultado de uma sessao de inventario finalizada: resumo e as tres categorias.
+// Resultado de uma sessao de inventario finalizada: dados da sessao, resumo e as tres categorias.
 
 package com.tri082.inventario.data.remote;
 
@@ -7,6 +7,15 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ResultadoInventario {
+
+    @SerializedName("sessao_id")
+    public int sessaoId;
+
+    @SerializedName("data_inicio")
+    public String dataInicio;
+
+    @SerializedName("data_fim")
+    public String dataFim;
 
     @SerializedName("resumo")
     public Resumo resumo;
@@ -41,6 +50,9 @@ public class ResultadoInventario {
         @SerializedName("epc")
         public String epc;
 
+        @SerializedName("categoria")
+        public String categoria;
+
         @SerializedName("tipo")
         public String tipo;
 
@@ -51,5 +63,8 @@ public class ResultadoInventario {
     public static class LeituraResumo {
         @SerializedName("epc")
         public String epc;
+
+        @SerializedName("timestamp")
+        public String timestamp;
     }
 }
