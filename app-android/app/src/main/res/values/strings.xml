@@ -29,6 +29,18 @@
     <string name="painel_usuarios">Usuários</string>
     <string name="painel_usuarios_sub">Criar contas, trocar senhas e desativar acessos</string>
     <string name="painel_administracao">Administração</string>
+    <string name="dash_titulo">Visão geral</string>
+    <string name="dash_7">7 dias</string>
+    <string name="dash_30">30 dias</string>
+    <string name="dash_90">90 dias</string>
+    <string name="dash_itens_novos">itens novos</string>
+    <string name="dash_contagens">contagens</string>
+    <string name="dash_leituras">tags lidas</string>
+    <string name="dash_ultima">Última contagem</string>
+    <string name="dash_percentual">%1$d%%</string>
+    <string name="dash_ultima_detalhe">%1$d de %2$d itens encontrados</string>
+    <string name="dash_ultima_extra">%1$d ausentes · %2$d não identificados · toque para ver o relatório</string>
+    <string name="dash_sem_contagem">Nenhuma contagem finalizada ainda.</string>
 
     <string name="config_voltar">Voltar</string>
     <string name="config_titulo">Endereço da API</string>

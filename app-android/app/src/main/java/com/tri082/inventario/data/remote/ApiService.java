@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -67,6 +68,9 @@ public interface ApiService {
 
     @GET("pendencias")
     Call<List<Pendencia>> listarPendencias();
+
+    @GET("painel/resumo")
+    Call<PainelResumo> obterResumo(@Query("dias") int dias);
 
     @POST("pendencias/{epc}/ignorar")
     Call<Void> ignorarTag(@Path("epc") String epc);

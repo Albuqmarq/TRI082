@@ -1,4 +1,5 @@
-// Tela inicial apos o login: indicadores da operacao, aviso de pendencias (admin) e acoes rapidas por papel.
+// Tela inicial apos o login: indicadores da operacao, dashboard por periodo, aviso de pendencias (admin)
+// e acoes rapidas por papel.
 
 package com.tri082.inventario.ui;
 
@@ -15,15 +16,20 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.tri082.inventario.R;
 import com.tri082.inventario.data.local.Sessao;
 import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Item;
+import com.tri082.inventario.data.remote.PainelResumo;
 import com.tri082.inventario.data.remote.Pendencia;
 import com.tri082.inventario.data.repository.FilaLeituras;
+import com.tri082.inventario.util.Datas;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,12 +45,21 @@ public class PainelFragment extends Fragment {
     private TextView textoSincronia;
     private View botaoSincronizar;
     private final Runnable aoMudarFila = this::atualizarFila;
+    private View raiz;
+    private int periodoDias = 30;
+    private PainelResumo.UltimaContagem ultimaContagem;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_painel, container, false);
+        raiz = view;
+        view.findViewById(R.id.dash_7).setOnClickListener(v -> escolherPeriodo(7));
+        view.findViewById(R.id.dash_30).setOnClickListener(v -> escolherPeriodo(30));
+        view.findViewById(R.id.dash_90).setOnClickListener(v -> escolherPeriodo(90));
+        view.findViewById(R.id.dash_card_ultima).setOnClickListener(v -> abrirUltimaContagem());
+        marcarPeriodo();
         textoPapel = view.findViewById(R.id.texto_papel);
         valorItens = view.findViewById(R.id.valor_itens);
         textoPendenciasTitulo = view.findViewById(R.id.texto_pendencias_titulo);
@@ -81,6 +96,7 @@ public class PainelFragment extends Fragment {
         super.onResume();
         FilaLeituras.adicionarOuvinte(aoMudarFila);
         atualizarFila();
+        carregarResumo();
         carregarItens();
         if (Sessao.ehAdmin()) {
             carregarPendencias();
@@ -91,6 +107,68 @@ public class PainelFragment extends Fragment {
     public void onPause() {
         super.onPause();
         FilaLeituras.removerOuvinte(aoMudarFila);
+    }
+
+    private void escolherPeriodo(int dias) {
+        periodoDias = dias;
+        marcarPeriodo();
+        carregarResumo();
+    }
+
+    private void marcarPeriodo() {
+        raiz.findViewById(R.id.dash_7).setSelected(periodoDias == 7);
+        raiz.findViewById(R.id.dash_30).setSelected(periodoDias == 30);
+        raiz.findViewById(R.id.dash_90).setSelected(periodoDias == 90);
+    }
+
+    private void carregarResumo() {
+        int pedido = periodoDias;
+        servico().obterResumo(pedido).enqueue(new Callback<PainelResumo>() {
+            @Override
+            public void onResponse(@NonNull Call<PainelResumo> call, @NonNull Response<PainelResumo> resposta) {
+                if (isAdded() && pedido == periodoDias && resposta.isSuccessful() && resposta.body() != null) {
+                    mostrarResumo(resposta.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<PainelResumo> call, @NonNull Throwable erro) {
+            }
+        });
+    }
+
+    private void mostrarResumo(PainelResumo resumo) {
+        NumberFormat numero = NumberFormat.getIntegerInstance(new Locale("pt", "BR"));
+        ((TextView) raiz.findViewById(R.id.dash_itens)).setText(numero.format(resumo.itensNovos));
+        ((TextView) raiz.findViewById(R.id.dash_contagens)).setText(numero.format(resumo.inventariosFinalizados));
+        ((TextView) raiz.findViewById(R.id.dash_leituras)).setText(numero.format(resumo.leituras));
+
+        ultimaContagem = resumo.ultimaContagem;
+        boolean tem = ultimaContagem != null;
+        raiz.findViewById(R.id.dash_ultima_conteudo).setVisibility(tem ? View.VISIBLE : View.GONE);
+        raiz.findViewById(R.id.dash_sem_contagem).setVisibility(tem ? View.GONE : View.VISIBLE);
+        if (!tem) {
+            ((TextView) raiz.findViewById(R.id.dash_ultima_data)).setText("");
+            return;
+        }
+        int percentual = ultimaContagem.totalEsperado > 0
+                ? Math.round(100f * ultimaContagem.totalEncontrados / ultimaContagem.totalEsperado) : 0;
+        ((TextView) raiz.findViewById(R.id.dash_ultima_data)).setText(Datas.paraTexto(ultimaContagem.dataFim));
+        ((TextView) raiz.findViewById(R.id.dash_percentual)).setText(getString(R.string.dash_percentual, percentual));
+        ((TextView) raiz.findViewById(R.id.dash_ultima_detalhe)).setText(getString(R.string.dash_ultima_detalhe,
+                ultimaContagem.totalEncontrados, ultimaContagem.totalEsperado));
+        ((TextView) raiz.findViewById(R.id.dash_ultima_extra)).setText(getString(R.string.dash_ultima_extra,
+                ultimaContagem.totalAusentes, ultimaContagem.totalNaoIdentificados));
+        ((LinearProgressIndicator) raiz.findViewById(R.id.dash_progresso)).setProgressCompat(percentual, true);
+    }
+
+    private void abrirUltimaContagem() {
+        if (ultimaContagem == null) {
+            return;
+        }
+        Bundle argumentos = new Bundle();
+        argumentos.putInt("sessaoId", ultimaContagem.sessaoId);
+        Navigation.findNavController(raiz).navigate(R.id.relatorioFragment, argumentos);
     }
 
     private void atualizarFila() {

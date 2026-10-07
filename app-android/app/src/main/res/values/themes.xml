@@ -213,4 +213,17 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <style name="ChipPequeno">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">6dp</item>
+        <item name="android:background">@drawable/chip_fundo</item>
+        <item name="android:textColor">@color/chip_texto</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingHorizontal">10dp</item>
+        <item name="android:paddingVertical">5dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
 </resources>
