@@ -1,8 +1,10 @@
-# Regras de negocio dos usuarios: normalizacao do nome, verificacao de duplicidade e hash de senha.
+# Regras de negocio dos usuarios: normalizacao do nome, verificacao de duplicidade, hash de senha e garantia
+# de que o sistema sempre tenha pelo menos um administrador ativo.
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.enums import Papel
 from app.models.usuario import Usuario
 from app.normalizacao import normalizar_nome_usuario
 from app.repositorios import usuarios as repositorio
@@ -42,6 +44,13 @@ def obter_usuario(sessao: Session, usuario_id: int) -> Usuario:
 
 def atualizar_usuario(sessao: Session, usuario_id: int, dados: UsuarioAtualizar) -> Usuario:
     usuario = obter_usuario(sessao, usuario_id)
+    admin_ativo = usuario.papel == Papel.admin.value and usuario.ativo
+    rebaixando = dados.papel is not None and dados.papel != Papel.admin
+    if admin_ativo and (dados.ativo is False or rebaixando) and repositorio.contar_admins_ativos(sessao) <= 1:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="E preciso manter pelo menos um administrador ativo",
+        )
     if dados.papel is not None:
         usuario.papel = dados.papel.value
     if dados.senha is not None:

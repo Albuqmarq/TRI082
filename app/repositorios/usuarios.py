@@ -2,6 +2,7 @@
 
 from sqlalchemy.orm import Session
 
+from app.enums import Papel
 from app.models.usuario import Usuario
 
 
@@ -15,6 +16,14 @@ def obter_por_id(sessao: Session, usuario_id: int) -> Usuario | None:
 
 def obter_por_nome(sessao: Session, nome_usuario: str) -> Usuario | None:
     return sessao.query(Usuario).filter(Usuario.nome_usuario == nome_usuario).first()
+
+
+def contar_admins_ativos(sessao: Session) -> int:
+    return (
+        sessao.query(Usuario)
+        .filter(Usuario.papel == Papel.admin.value, Usuario.ativo.is_(True))
+        .count()
+    )
 
 
 def criar(sessao: Session, usuario: Usuario) -> Usuario:
