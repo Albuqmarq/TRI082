@@ -1,5 +1,6 @@
 # Acesso a dados das leituras: apenas consultas e gravacoes no banco.
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.enums import StatusLeitura
@@ -30,6 +31,15 @@ def listar_por_sessao(sessao: Session, inventario_id: int) -> list[Leitura]:
         .order_by(Leitura.id)
         .all()
     )
+
+
+def contar_por_sessao(sessao: Session) -> dict[int, int]:
+    linhas = (
+        sessao.query(Leitura.sessao_id, func.count(Leitura.id))
+        .group_by(Leitura.sessao_id)
+        .all()
+    )
+    return {sessao_id: total for sessao_id, total in linhas}
 
 
 def criar(sessao: Session, leitura: Leitura) -> Leitura:

@@ -16,6 +16,7 @@ class SessaoResposta(BaseModel):
     data_fim: datetime | None
     criado_por: int
     finalizado_por: int | None
+    total_leituras: int = 0
 
 
 class LeituraCriar(BaseModel):

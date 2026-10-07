@@ -20,7 +20,11 @@ def criar_sessao(sessao: Session, criado_por: int) -> SessaoInventario:
 
 
 def listar_sessoes(sessao: Session) -> list[SessaoInventario]:
-    return repositorio_sessoes.listar(sessao)
+    contagens = repositorio_leituras.contar_por_sessao(sessao)
+    inventarios = repositorio_sessoes.listar(sessao)
+    for inventario in inventarios:
+        inventario.total_leituras = contagens.get(inventario.id, 0)
+    return inventarios
 
 
 def obter_sessao_inventario(sessao: Session, inventario_id: int) -> SessaoInventario:
