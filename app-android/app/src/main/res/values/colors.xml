@@ -7,6 +7,13 @@
     <color name="branco">#FFFFFF</color>
     <color name="fundo">#F4F6F9</color>
     <color name="texto">#1A1C1E</color>
-    <color name="texto_secundario">#5A5F66</color>
+    <color name="texto_secundario">#6B7178</color>
     <color name="erro">#C62828</color>
+
+    <color name="navy">#2B448C</color>
+    <color name="navy_suave">#E8EDF9</color>
+    <color name="linha">#E6E8EC</color>
+    <color name="alerta_suave">#FBF3E0</color>
+    <color name="alerta_texto">#8A6D1F</color>
+    <color name="erro_suave">#FBEAEA</color>
 </resources>

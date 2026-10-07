@@ -38,6 +38,8 @@ public class ConfiguracoesFragment extends Fragment {
         campoIp.setText(configuracao.obterIp());
         campoPorta.setText(configuracao.obterPorta());
 
+        view.findViewById(R.id.config_voltar).setOnClickListener(
+                v -> androidx.navigation.fragment.NavHostFragment.findNavController(this).popBackStack());
         botaoSalvar.setOnClickListener(v -> salvar());
         return view;
     }

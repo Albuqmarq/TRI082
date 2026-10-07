@@ -58,9 +58,11 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
 
         adapter = new LeiturasAdapter(this::aoClicarTag, this::aoSegurarTag);
         lista.setLayoutManager(new LinearLayoutManager(requireContext()));
+        lista.addItemDecoration(new androidx.recyclerview.widget.DividerItemDecoration(
+                requireContext(), androidx.recyclerview.widget.DividerItemDecoration.VERTICAL));
         lista.setAdapter(adapter);
 
-        textoStatus.setText(R.string.leitura_status_verificando);
+        textoStatus.setText(R.string.leitura_verificando_curto);
         botaoLer.setEnabled(false);
         botaoLer.setOnClickListener(v -> alternar());
         view.findViewById(R.id.botao_limpar).setOnClickListener(v -> limpar());
@@ -90,8 +92,8 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
     public void aoMudarStatus(boolean disponivel) {
         this.disponivel = disponivel;
         textoStatus.setText(disponivel
-                ? R.string.leitura_status_pronto
-                : R.string.leitura_status_indisponivel);
+                ? R.string.leitura_pausada
+                : R.string.leitura_indisponivel_curto);
         botaoLer.setEnabled(disponivel);
     }
 
@@ -123,12 +125,14 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         lendo = true;
         leitor.ligarLeitura();
         botaoLer.setText(R.string.leitura_parar);
+        textoStatus.setText(R.string.leitura_lendo);
     }
 
     private void pararLeitura() {
         lendo = false;
         leitor.desligarLeitura();
         botaoLer.setText(R.string.leitura_iniciar);
+        textoStatus.setText(R.string.leitura_pausada);
     }
 
     private void pararSeLendo() {
@@ -232,6 +236,6 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
 
     private void atualizarLista() {
         adapter.definir(EstadoLeitura.lista());
-        textoContagem.setText(getString(R.string.leitura_contagem, EstadoLeitura.totalTags()));
+        textoContagem.setText(String.valueOf(EstadoLeitura.totalTags()));
     }
 }

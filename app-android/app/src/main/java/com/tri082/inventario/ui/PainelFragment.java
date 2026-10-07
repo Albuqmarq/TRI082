@@ -1,5 +1,4 @@
-// Tela inicial apos o login: mostra os indicadores da operacao (itens, pendentes de envio, pendencias de cadastro)
-// e atalhos que so aparecem para o Administrador.
+// Tela inicial apos o login: indicadores da operacao, aviso de pendencias (admin) e acoes rapidas por papel.
 
 package com.tri082.inventario.ui;
 
@@ -32,8 +31,7 @@ public class PainelFragment extends Fragment {
 
     private TextView textoPapel;
     private TextView valorItens;
-    private TextView valorPendentesEnvio;
-    private TextView valorPendencias;
+    private TextView textoPendenciasTitulo;
     private View cardPendencias;
 
     @Nullable
@@ -43,17 +41,21 @@ public class PainelFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_painel, container, false);
         textoPapel = view.findViewById(R.id.texto_papel);
         valorItens = view.findViewById(R.id.valor_itens);
-        valorPendentesEnvio = view.findViewById(R.id.valor_pendentes_envio);
-        valorPendencias = view.findViewById(R.id.valor_pendencias);
+        textoPendenciasTitulo = view.findViewById(R.id.texto_pendencias_titulo);
         cardPendencias = view.findViewById(R.id.card_pendencias);
 
         boolean admin = Sessao.ehAdmin();
         textoPapel.setText(getString(R.string.painel_papel,
                 admin ? getString(R.string.painel_papel_admin) : getString(R.string.painel_papel_funcionario)));
-        view.findViewById(R.id.area_atalhos_admin).setVisibility(admin ? View.VISIBLE : View.GONE);
 
-        view.findViewById(R.id.botao_novo_item).setOnClickListener(
+        view.findViewById(R.id.linha_cadastrar).setVisibility(admin ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.div_cadastrar).setVisibility(admin ? View.VISIBLE : View.GONE);
+
+        view.findViewById(R.id.linha_cadastrar).setOnClickListener(
                 v -> Navigation.findNavController(v).navigate(R.id.itemFormFragment));
+        view.findViewById(R.id.linha_leitura).setOnClickListener(v -> irPara(v, R.id.leituraFragment));
+        view.findViewById(R.id.linha_inventario).setOnClickListener(v -> irPara(v, R.id.inventarioFragment));
+        view.findViewById(R.id.botao_revisar).setOnClickListener(v -> irPara(v, R.id.leituraFragment));
         view.findViewById(R.id.botao_config).setOnClickListener(
                 v -> Navigation.findNavController(v).navigate(R.id.configuracoesFragment));
         view.findViewById(R.id.botao_sair).setOnClickListener(this::sair);
@@ -63,12 +65,14 @@ public class PainelFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // A fila offline (#15) ainda nao existe: as leituras vao direto para a API, entao nao ha nada na fila de envio.
-        valorPendentesEnvio.setText("0");
         carregarItens();
         if (Sessao.ehAdmin()) {
             carregarPendencias();
         }
+    }
+
+    private void irPara(View origem, int destino) {
+        Navigation.findNavController(origem).navigate(destino);
     }
 
     private void carregarItens() {
@@ -90,8 +94,8 @@ public class PainelFragment extends Fragment {
         servico().listarPendencias().enqueue(new Callback<List<Pendencia>>() {
             @Override
             public void onResponse(@NonNull Call<List<Pendencia>> call, @NonNull Response<List<Pendencia>> resposta) {
-                if (isAdded() && resposta.isSuccessful() && resposta.body() != null) {
-                    valorPendencias.setText(String.valueOf(resposta.body().size()));
+                if (isAdded() && resposta.isSuccessful() && resposta.body() != null && !resposta.body().isEmpty()) {
+                    textoPendenciasTitulo.setText(getString(R.string.painel_pendencias_titulo, resposta.body().size()));
                     cardPendencias.setVisibility(View.VISIBLE);
                 }
             }

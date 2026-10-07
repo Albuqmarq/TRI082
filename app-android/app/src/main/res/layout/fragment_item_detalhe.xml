@@ -1,70 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/fundo"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/det_voltar"
+        style="@style/Voltar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detalhe_voltar" />
 
     <TextView
         android:id="@+id/det_nome"
+        style="@style/Titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:paddingBottom="12dp" />
+        android:layout_marginTop="4dp" />
 
-    <TextView
-        android:id="@+id/det_epc"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Cartao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="4dp" />
+        android:layout_marginTop="16dp">
 
-    <TextView
-        android:id="@+id/det_categoria"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <TextView
-        android:id="@+id/det_tipo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp" />
+            <TextView style="@style/DetRotulo" android:text="@string/detalhe_label_epc" />
+            <TextView android:id="@+id/det_epc" style="@style/DetValor" android:fontFamily="monospace" />
 
-    <TextView
-        android:id="@+id/det_cor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp" />
+            <TextView style="@style/DetRotulo" android:layout_marginTop="14dp" android:text="@string/detalhe_label_cor" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="2dp">
 
-    <TextView
-        android:id="@+id/det_fornecedor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp" />
+                <View
+                    android:id="@+id/det_swatch"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="7dp"
+                    android:background="@drawable/swatch_cor" />
+
+                <TextView android:id="@+id/det_cor" style="@style/DetValor" />
+            </LinearLayout>
+
+            <TextView style="@style/DetRotulo" android:layout_marginTop="14dp" android:text="@string/detalhe_label_categoria" />
+            <TextView android:id="@+id/det_categoria" style="@style/DetValor" />
+
+            <TextView style="@style/DetRotulo" android:layout_marginTop="14dp" android:text="@string/detalhe_label_tipo" />
+            <TextView android:id="@+id/det_tipo" style="@style/DetValor" />
+
+            <TextView style="@style/DetRotulo" android:layout_marginTop="14dp" android:text="@string/detalhe_label_fornecedor" />
+            <TextView android:id="@+id/det_fornecedor" style="@style/DetValor" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
-        android:id="@+id/area_admin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:visibility="gone">
+        android:layout_marginTop="16dp">
 
         <Button
             android:id="@+id/botao_editar"
-            android:layout_width="wrap_content"
+            style="@style/Botao.Principal"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
             android:text="@string/detalhe_editar" />
 
         <Button
-            android:id="@+id/botao_excluir"
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:id="@+id/botao_localizar"
+            style="@style/Botao.Secundario"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/detalhe_excluir" />
-
+            android:layout_weight="1"
+            android:text="@string/detalhe_localizar" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/botao_excluir"
+        style="@style/Botao.Perigo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/detalhe_excluir" />
 
 </LinearLayout>

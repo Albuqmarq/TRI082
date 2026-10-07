@@ -1,17 +1,20 @@
-// Adaptador da lista de itens do catalogo.
+// Adaptador da lista de itens do catalogo: nome, circulo com a cor, cor e tipo, e a categoria.
 
 package com.tri082.inventario.ui;
 
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tri082.inventario.R;
 import com.tri082.inventario.data.remote.Item;
+import com.tri082.inventario.util.Cores;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Segurador> {
     @Override
     public Segurador onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_lista, parent, false);
+                .inflate(R.layout.item_catalogo, parent, false);
         return new Segurador(view);
     }
 
@@ -44,17 +47,23 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Segurador> {
     public void onBindViewHolder(@NonNull Segurador segurador, int posicao) {
         Item item = itens.get(posicao);
         segurador.nome.setText(item.getNome());
-        segurador.detalhe.setText(montarDetalhe(item));
-        segurador.itemView.setOnClickListener(v -> aoClicar.accept(item));
-    }
+        segurador.categoria.setText(item.getCategoria());
 
-    private String montarDetalhe(Item item) {
-        StringBuilder texto = new StringBuilder();
-        texto.append(item.getCategoria()).append(" - ").append(item.getTipo());
-        if (item.getCor() != null && !item.getCor().isEmpty()) {
-            texto.append(" - ").append(item.getCor());
+        String cor = item.getCor();
+        boolean temCor = cor != null && !cor.isEmpty();
+        Integer valorCor = Cores.paraCor(cor);
+        if (valorCor != null) {
+            segurador.swatch.setVisibility(View.VISIBLE);
+            GradientDrawable fundo = (GradientDrawable) ContextCompat
+                    .getDrawable(segurador.itemView.getContext(), R.drawable.swatch_cor).mutate();
+            fundo.setColor(valorCor);
+            segurador.swatch.setBackground(fundo);
+        } else {
+            segurador.swatch.setVisibility(View.GONE);
         }
-        return texto.toString();
+        segurador.detalhe.setText(temCor ? cor + "  ·  " + item.getTipo() : item.getTipo());
+
+        segurador.itemView.setOnClickListener(v -> aoClicar.accept(item));
     }
 
     @Override
@@ -65,11 +74,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Segurador> {
     static class Segurador extends RecyclerView.ViewHolder {
         final TextView nome;
         final TextView detalhe;
+        final TextView categoria;
+        final View swatch;
 
         Segurador(View itemView) {
             super(itemView);
             nome = itemView.findViewById(R.id.item_nome);
             detalhe = itemView.findViewById(R.id.item_detalhe);
+            categoria = itemView.findViewById(R.id.item_categoria);
+            swatch = itemView.findViewById(R.id.item_swatch);
         }
     }
 }

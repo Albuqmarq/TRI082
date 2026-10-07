@@ -44,6 +44,9 @@ public interface ApiService {
     @POST("inventarios")
     Call<SessaoResposta> criarSessao();
 
+    @GET("inventarios")
+    Call<List<SessaoResposta>> listarSessoes();
+
     @POST("inventarios/{id}/leituras")
     Call<Void> registrarLeitura(@Path("id") int id, @Body LeituraRequisicao leitura);
 

@@ -3,23 +3,23 @@
 
     <item
         android:id="@+id/painelFragment"
-        android:icon="@android:drawable/ic_menu_agenda"
+        android:icon="@drawable/ic_nav_painel"
         android:title="@string/titulo_painel" />
     <item
         android:id="@+id/leituraFragment"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_nav_leitura"
         android:title="@string/titulo_leitura" />
     <item
         android:id="@+id/catalogoFragment"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_nav_catalogo"
         android:title="@string/titulo_catalogo" />
     <item
         android:id="@+id/inventarioFragment"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_nav_inventario"
         android:title="@string/titulo_inventario" />
     <item
         android:id="@+id/localizarFragment"
-        android:icon="@android:drawable/ic_menu_mylocation"
+        android:icon="@drawable/ic_nav_localizar"
         android:title="@string/titulo_localizar" />
 
 </menu>

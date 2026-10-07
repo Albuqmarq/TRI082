@@ -1,4 +1,4 @@
-// Tela principal: barra superior com botao de voltar, navegacao por abas, e volta ao login quando a sessao expira.
+// Tela principal: navegacao por abas na barra inferior e volta ao login quando a sessao expira.
 
 package com.tri082.inventario.ui;
 
@@ -7,12 +7,14 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tri082.inventario.R;
 import com.tri082.inventario.data.local.Sessao;
@@ -27,7 +29,10 @@ public class MainActivity extends AppCompatActivity {
             new HashSet<>(Arrays.asList(293, 294, 520, 521, 522));
 
     private NavController navController;
-    private AppBarConfiguration configuracaoBarra;
+    private BottomNavigationView bottomNav;
+    private View linhaNav;
+    private View conteudo;
+    private int margemInferior;
     private Runnable gatilhoApertar;
     private Runnable gatilhoSoltar;
 
@@ -64,41 +69,41 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
-
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         NavHostFragment navHostFragment = (NavHostFragment)
                 getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        bottomNav = findViewById(R.id.bottom_nav);
+        linhaNav = findViewById(R.id.linha_nav);
+        conteudo = findViewById(R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(bottomNav, navController);
 
-        Set<Integer> telasPrincipais = new HashSet<>(Arrays.asList(
-                R.id.loginFragment,
-                R.id.painelFragment,
-                R.id.leituraFragment,
-                R.id.catalogoFragment,
-                R.id.inventarioFragment,
-                R.id.localizarFragment));
-        configuracaoBarra = new AppBarConfiguration.Builder(telasPrincipais).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, configuracaoBarra);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.raiz), (raiz, insets) -> {
+            Insets barras = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets teclado = insets.getInsets(WindowInsetsCompat.Type.ime());
+            raiz.setPadding(0, barras.top, 0, 0);
+            margemInferior = Math.max(barras.bottom, teclado.bottom);
+            ajustarRodape();
+            return insets;
+        });
 
         navController.addOnDestinationChangedListener((controlador, destino, argumentos) -> {
             int id = destino.getId();
-            toolbar.setVisibility(id == R.id.loginFragment ? View.GONE : View.VISIBLE);
             boolean semAbas = id == R.id.loginFragment
                     || id == R.id.configuracoesFragment
                     || id == R.id.itemDetalheFragment
                     || id == R.id.itemFormFragment;
             bottomNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);
+            linhaNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);
+            ajustarRodape();
         });
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, configuracaoBarra) || super.onSupportNavigateUp();
+    private void ajustarRodape() {
+        boolean comAbas = bottomNav.getVisibility() == View.VISIBLE;
+        conteudo.setPadding(0, 0, 0, comAbas ? 0 : margemInferior);
     }
 
     @Override

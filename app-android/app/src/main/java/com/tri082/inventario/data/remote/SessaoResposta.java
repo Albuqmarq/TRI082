@@ -11,4 +11,10 @@ public class SessaoResposta {
 
     @SerializedName("status")
     public String status;
+
+    @SerializedName("data_inicio")
+    public String dataInicio;
+
+    @SerializedName("data_fim")
+    public String dataFim;
 }

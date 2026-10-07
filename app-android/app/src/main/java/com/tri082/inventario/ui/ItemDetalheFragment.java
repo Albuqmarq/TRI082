@@ -2,17 +2,18 @@
 
 package com.tri082.inventario.ui;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -21,6 +22,7 @@ import com.tri082.inventario.data.local.Sessao;
 import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Item;
+import com.tri082.inventario.util.Cores;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +32,7 @@ public class ItemDetalheFragment extends Fragment {
 
     private int itemId;
     private View raiz;
+    private Item itemAtual;
 
     @Nullable
     @Override
@@ -38,10 +41,15 @@ public class ItemDetalheFragment extends Fragment {
         raiz = inflater.inflate(R.layout.fragment_item_detalhe, container, false);
         itemId = getArguments() != null ? getArguments().getInt("itemId", -1) : -1;
 
-        View areaAdmin = raiz.findViewById(R.id.area_admin);
-        areaAdmin.setVisibility(Sessao.ehAdmin() ? View.VISIBLE : View.GONE);
+        boolean admin = Sessao.ehAdmin();
+        raiz.findViewById(R.id.botao_editar).setVisibility(admin ? View.VISIBLE : View.GONE);
+        raiz.findViewById(R.id.botao_excluir).setVisibility(admin ? View.VISIBLE : View.GONE);
+
+        raiz.findViewById(R.id.det_voltar).setOnClickListener(
+                v -> NavHostFragment.findNavController(this).popBackStack());
         raiz.findViewById(R.id.botao_editar).setOnClickListener(v -> editar());
         raiz.findViewById(R.id.botao_excluir).setOnClickListener(v -> confirmarExclusao());
+        raiz.findViewById(R.id.botao_localizar).setOnClickListener(v -> localizar());
         return raiz;
     }
 
@@ -76,12 +84,26 @@ public class ItemDetalheFragment extends Fragment {
     }
 
     private void preencher(Item item) {
+        itemAtual = item;
         texto(R.id.det_nome, item.getNome());
-        texto(R.id.det_epc, getString(R.string.detalhe_epc, item.getEpc()));
-        texto(R.id.det_categoria, getString(R.string.detalhe_categoria, item.getCategoria()));
-        texto(R.id.det_tipo, getString(R.string.detalhe_tipo, item.getTipo()));
-        texto(R.id.det_cor, getString(R.string.detalhe_cor, ouVazio(item.getCor())));
-        texto(R.id.det_fornecedor, getString(R.string.detalhe_fornecedor, ouVazio(item.getFornecedor())));
+        texto(R.id.det_epc, item.getEpc());
+        texto(R.id.det_categoria, item.getCategoria());
+        texto(R.id.det_tipo, item.getTipo());
+        texto(R.id.det_fornecedor, ouVazio(item.getFornecedor()));
+
+        String cor = item.getCor();
+        View swatch = raiz.findViewById(R.id.det_swatch);
+        texto(R.id.det_cor, cor != null && !cor.isEmpty() ? cor : "-");
+        Integer valorCor = Cores.paraCor(cor);
+        if (valorCor != null) {
+            swatch.setVisibility(View.VISIBLE);
+            GradientDrawable fundo = (GradientDrawable) ContextCompat
+                    .getDrawable(requireContext(), R.drawable.swatch_cor).mutate();
+            fundo.setColor(valorCor);
+            swatch.setBackground(fundo);
+        } else {
+            swatch.setVisibility(View.GONE);
+        }
     }
 
     private String ouVazio(String valor) {
@@ -96,6 +118,16 @@ public class ItemDetalheFragment extends Fragment {
         Bundle argumentos = new Bundle();
         argumentos.putInt("itemId", itemId);
         NavHostFragment.findNavController(this).navigate(R.id.itemFormFragment, argumentos);
+    }
+
+    private void localizar() {
+        if (itemAtual == null) {
+            return;
+        }
+        Bundle argumentos = new Bundle();
+        argumentos.putString("epc", itemAtual.getEpc());
+        argumentos.putString("nome", itemAtual.getNome());
+        NavHostFragment.findNavController(this).navigate(R.id.localizarFragment, argumentos);
     }
 
     private void confirmarExclusao() {

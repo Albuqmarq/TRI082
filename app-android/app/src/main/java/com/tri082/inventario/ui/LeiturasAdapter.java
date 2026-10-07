@@ -1,4 +1,4 @@
-// Adaptador da lista de tags lidas: mostra o nome do item (quando conhecido) ou o EPC, e a contagem de leituras.
+// Adaptador da lista de tags lidas: mostra o nome (quando conhecido) ou que a tag esta sem cadastro, com o EPC.
 
 package com.tri082.inventario.ui;
 
@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tri082.inventario.R;
 import com.tri082.inventario.data.local.EstadoLeitura;
+import com.tri082.inventario.data.local.Sessao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
     @Override
     public Segurador onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_lista, parent, false);
+                .inflate(R.layout.item_leitura, parent, false);
         return new Segurador(view);
     }
 
@@ -49,35 +51,29 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
         android.content.Context contexto = segurador.itemView.getContext();
         boolean cadastrada = registro.resolvida && registro.cadastrada;
 
-        segurador.nome.setText(cadastrada ? registro.nome : registro.epc);
-
-        StringBuilder detalhe = new StringBuilder();
         if (cadastrada) {
-            if (registro.tipo != null && !registro.tipo.isEmpty()) {
-                detalhe.append(registro.tipo);
-            }
-            if (registro.cor != null && !registro.cor.isEmpty()) {
-                if (detalhe.length() > 0) {
-                    detalhe.append(" - ");
-                }
-                detalhe.append(registro.cor);
+            segurador.nome.setText(registro.nome);
+            pintar(segurador.nome, R.color.texto);
+            segurador.epc.setText(contexto.getString(R.string.leitura_epc_curto, registro.epc));
+            segurador.status.setText(contexto.getString(R.string.leitura_lida, registro.contagem));
+            pintar(segurador.status, R.color.texto_secundario);
+        } else if (registro.resolvida) {
+            segurador.nome.setText(R.string.leitura_tag_sem_cadastro);
+            pintar(segurador.nome, R.color.texto_secundario);
+            segurador.epc.setText(registro.epc);
+            if (Sessao.ehAdmin()) {
+                segurador.status.setText(R.string.leitura_cadastrar);
+                pintar(segurador.status, R.color.navy);
+            } else {
+                segurador.status.setText(R.string.leitura_pendencia_curta);
+                pintar(segurador.status, R.color.texto_secundario);
             }
         } else {
-            detalhe.append(contexto.getString(R.string.leitura_epc_curto, registro.epc));
-        }
-        if (detalhe.length() > 0) {
-            detalhe.append(" - ");
-        }
-        detalhe.append(contexto.getString(R.string.leitura_lida, registro.contagem));
-        segurador.detalhe.setText(detalhe.toString());
-
-        if (!registro.resolvida) {
-            segurador.status.setVisibility(View.GONE);
-        } else if (!registro.cadastrada) {
-            segurador.status.setText(R.string.leitura_nao_cadastrada);
-            segurador.status.setVisibility(View.VISIBLE);
-        } else {
-            segurador.status.setVisibility(View.GONE);
+            segurador.nome.setText(registro.epc);
+            pintar(segurador.nome, R.color.texto);
+            segurador.epc.setText(R.string.leitura_verificando);
+            segurador.status.setText(contexto.getString(R.string.leitura_lida, registro.contagem));
+            pintar(segurador.status, R.color.texto_secundario);
         }
 
         segurador.itemView.setOnClickListener(v -> aoClicar.accept(registro));
@@ -87,6 +83,10 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
         });
     }
 
+    private void pintar(TextView alvo, int cor) {
+        alvo.setTextColor(ContextCompat.getColor(alvo.getContext(), cor));
+    }
+
     @Override
     public int getItemCount() {
         return itens.size();
@@ -94,13 +94,13 @@ public class LeiturasAdapter extends RecyclerView.Adapter<LeiturasAdapter.Segura
 
     static class Segurador extends RecyclerView.ViewHolder {
         final TextView nome;
-        final TextView detalhe;
+        final TextView epc;
         final TextView status;
 
         Segurador(View itemView) {
             super(itemView);
             nome = itemView.findViewById(R.id.item_nome);
-            detalhe = itemView.findViewById(R.id.item_detalhe);
+            epc = itemView.findViewById(R.id.item_epc);
             status = itemView.findViewById(R.id.item_status);
         }
     }

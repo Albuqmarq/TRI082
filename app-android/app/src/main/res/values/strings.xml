@@ -9,16 +9,24 @@
     <string name="titulo_localizar">Localizar</string>
     <string name="titulo_configuracoes">Configuracoes</string>
     <string name="painel_sair">Sair</string>
-    <string name="painel_visao_geral">Visao geral</string>
-    <string name="painel_papel">Conectado como %1$s</string>
+    <string name="painel_papel">Ola, %1$s</string>
     <string name="painel_papel_admin">Administrador</string>
     <string name="painel_papel_funcionario">Funcionario</string>
-    <string name="painel_itens">Itens cadastrados</string>
-    <string name="painel_pendentes_envio">Pendentes de envio</string>
-    <string name="painel_pendencias_cadastro">Pendencias de cadastro (tags lidas sem item)</string>
-    <string name="painel_atalhos">Atalhos</string>
+    <string name="painel_itens">Itens no catalogo</string>
+    <string name="painel_pendentes_envio">Envios pendentes</string>
+    <string name="painel_sincronizado">Tudo sincronizado</string>
+    <string name="painel_pendencias_titulo">%1$d tags sem cadastro</string>
+    <string name="painel_pendencias_desc">Foram lidas, mas ainda nao estao ligadas a um item do catalogo.</string>
+    <string name="painel_revisar">Revisar pendencias</string>
+    <string name="painel_acoes">Acoes rapidas</string>
     <string name="painel_novo_item">Cadastrar item</string>
+    <string name="painel_novo_item_sub">Adicionar ao catalogo</string>
+    <string name="painel_iniciar_leitura">Iniciar leitura</string>
+    <string name="painel_iniciar_leitura_sub">Ler tags com o coletor</string>
+    <string name="painel_contagem">Contagem de estoque</string>
+    <string name="painel_contagem_sub">Abrir sessao de inventario</string>
 
+    <string name="config_voltar">Voltar</string>
     <string name="config_titulo">Endereco da API</string>
     <string name="config_ip">IP do servidor</string>
     <string name="config_ip_dica">ex: 192.168.0.10</string>
@@ -41,34 +49,49 @@
     <string name="login_erro_perfil">Conectado, mas nao foi possivel carregar o perfil.</string>
     <string name="login_erro_generico">Nao foi possivel entrar. Codigo %1$d</string>
 
-    <string name="catalogo_buscar">Buscar por nome</string>
+    <string name="catalogo_buscar">Buscar por nome, cor ou EPC</string>
     <string name="catalogo_novo">Novo item</string>
+    <string name="catalogo_filtro_todos">Todos</string>
+    <string name="catalogo_contagem">%1$d itens</string>
     <string name="catalogo_vazio">Nenhum item encontrado</string>
     <string name="catalogo_erro_carregar">Nao foi possivel carregar os itens</string>
     <string name="catalogo_erro_salvar">Nao foi possivel concluir a operacao</string>
 
-    <string name="detalhe_epc">EPC: %1$s</string>
-    <string name="detalhe_categoria">Categoria: %1$s</string>
-    <string name="detalhe_tipo">Tipo: %1$s</string>
-    <string name="detalhe_cor">Cor: %1$s</string>
-    <string name="detalhe_fornecedor">Fornecedor: %1$s</string>
+    <string name="detalhe_voltar">Voltar para Catalogo</string>
+    <string name="detalhe_label_epc">EPC da tag</string>
+    <string name="detalhe_label_categoria">Categoria</string>
+    <string name="detalhe_label_tipo">Tipo</string>
+    <string name="detalhe_label_cor">Cor</string>
+    <string name="detalhe_label_fornecedor">Fornecedor</string>
+    <string name="detalhe_localizar">Localizar</string>
     <string name="detalhe_editar">Editar</string>
     <string name="detalhe_excluir">Excluir</string>
     <string name="detalhe_cancelar">Cancelar</string>
     <string name="detalhe_confirmar_exclusao">Excluir este item?</string>
     <string name="detalhe_excluido">Item excluido</string>
 
+    <string name="form_voltar">Voltar para Catalogo</string>
     <string name="form_titulo_novo">Novo item</string>
     <string name="form_titulo_editar">Editar item</string>
-    <string name="form_epc">EPC</string>
+    <string name="form_epc">EPC da tag</string>
     <string name="form_nome">Nome</string>
     <string name="form_categoria">Categoria</string>
     <string name="form_tipo">Tipo</string>
     <string name="form_cor">Cor</string>
     <string name="form_fornecedor">Fornecedor</string>
-    <string name="form_recomendar">Ou reaproveite um item recente:</string>
+    <string name="form_epc_hint">Aproxime a tag ou digite</string>
+    <string name="form_epc_ajuda">O campo e preenchido ao ler a tag com o coletor.</string>
+    <string name="form_nome_hint">Ex.: Rolo de malha dry fit</string>
+    <string name="form_categoria_hint">Tecido</string>
+    <string name="form_cor_hint">Preto</string>
+    <string name="form_tipo_hint">Rolo de 20m</string>
+    <string name="form_fornecedor_hint">Nome</string>
+    <string name="form_recomendar">Comecar a partir de um item recente</string>
     <string name="form_recomendar_usar">Usar</string>
+    <string name="form_cancelar">Cancelar</string>
     <string name="form_salvar">Salvar</string>
+    <string name="form_salvar_novo">Salvar item</string>
+    <string name="form_salvar_editar">Salvar alteracoes</string>
     <string name="form_erro_campos">Preencha EPC, nome, categoria e tipo</string>
     <string name="form_erro_epc">Ja existe um item com esse EPC</string>
     <string name="form_salvo">Item salvo</string>
@@ -84,6 +107,15 @@
     <string name="leitura_limpar">Limpar</string>
     <string name="leitura_epc_curto">EPC: %1$s</string>
     <string name="leitura_lida">lida %1$dx</string>
+    <string name="leitura_tags_lidas">tags lidas</string>
+    <string name="leitura_ultimas">Ultimas leituras</string>
+    <string name="leitura_pausada">Pausada</string>
+    <string name="leitura_lendo">Lendo</string>
+    <string name="leitura_indisponivel_curto">Indisponivel</string>
+    <string name="leitura_verificando_curto">Verificando</string>
+    <string name="leitura_tag_sem_cadastro">Tag sem cadastro</string>
+    <string name="leitura_cadastrar">Cadastrar</string>
+    <string name="leitura_pendencia_curta">pendencia</string>
     <string name="leitura_verificando">Verificando cadastro...</string>
     <string name="leitura_nao_cadastrada">Tag nao cadastrada</string>
     <string name="leitura_pendencia_registrada">Pendencia de cadastro registrada</string>
@@ -92,7 +124,14 @@
     <string name="leitura_remover_confirmar">Remover</string>
 
     <string name="inv_titulo_novo">Contagem de estoque</string>
-    <string name="inv_sem_sessao">Inicie uma sessao para conferir o estoque. Depois leia as tags na aba Leitura e finalize aqui.</string>
+    <string name="inv_sem_sessao">Nenhuma sessao aberta no momento.</string>
+    <string name="inv_passo1">Inicie uma sessao de contagem</string>
+    <string name="inv_passo2">Leia as tags na aba Leitura</string>
+    <string name="inv_passo3">Volte aqui e finalize a sessao</string>
+    <string name="inv_sessoes_anteriores">Sessoes anteriores</string>
+    <string name="inv_sem_sessoes">Nenhuma contagem finalizada ainda.</string>
+    <string name="inv_finalizado">Finalizado</string>
+    <string name="inv_aberto">Aberta</string>
     <string name="inv_iniciar">Iniciar inventario</string>
     <string name="inv_em_andamento_titulo">Inventario em andamento</string>
     <string name="inv_em_andamento">Va na aba Leitura, passe o coletor pelas pecas e volte aqui para finalizar e ver o resultado.</string>
@@ -108,4 +147,5 @@
     <string name="inv_ausentes">Ausentes (%1$d)</string>
     <string name="inv_nao_identificados">Nao identificados (%1$d)</string>
     <string name="inv_novo">Novo inventario</string>
+
 </resources>

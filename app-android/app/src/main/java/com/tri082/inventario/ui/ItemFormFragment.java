@@ -72,13 +72,23 @@ public class ItemFormFragment extends Fragment {
         textoRecomendar = view.findViewById(R.id.texto_recomendar);
         containerRecomendacoes = view.findViewById(R.id.container_recomendacoes);
         TextView titulo = view.findViewById(R.id.form_titulo);
+        View botaoCancelar = view.findViewById(R.id.botao_cancelar);
+        View ajudaEpc = view.findViewById(R.id.form_epc_ajuda);
+
+        view.findViewById(R.id.form_voltar).setOnClickListener(
+                v -> NavHostFragment.findNavController(this).popBackStack());
 
         if (edicao) {
             titulo.setText(R.string.form_titulo_editar);
-            campoEpc.setVisibility(View.GONE);
+            botaoSalvar.setText(R.string.form_salvar_editar);
+            campoEpc.setEnabled(false);
+            ajudaEpc.setVisibility(View.GONE);
+            botaoCancelar.setVisibility(View.VISIBLE);
+            botaoCancelar.setOnClickListener(v -> NavHostFragment.findNavController(this).popBackStack());
             carregarItem();
         } else {
             titulo.setText(R.string.form_titulo_novo);
+            botaoSalvar.setText(R.string.form_salvar_novo);
             String epcDaTag = getArguments() != null ? getArguments().getString("epc") : null;
             if (epcDaTag != null && !epcDaTag.isEmpty()) {
                 campoEpc.setText(epcDaTag);
@@ -98,6 +108,7 @@ public class ItemFormFragment extends Fragment {
             public void onResponse(@NonNull Call<Item> call, @NonNull Response<Item> resposta) {
                 if (isAdded() && resposta.isSuccessful() && resposta.body() != null) {
                     preencher(resposta.body());
+                    campoEpc.setText(resposta.body().getEpc());
                 }
             }
 

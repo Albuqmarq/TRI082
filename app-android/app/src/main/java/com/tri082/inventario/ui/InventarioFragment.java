@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,8 @@ public class InventarioFragment extends Fragment {
     private TextView textoEncontrados;
     private TextView textoAusentes;
     private TextView textoNaoId;
+    private LinearLayout containerSessoes;
+    private TextView textoSemSessoes;
 
     @Nullable
     @Override
@@ -46,6 +49,8 @@ public class InventarioFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inventario, container, false);
         areaSemSessao = view.findViewById(R.id.area_sem_sessao);
+        containerSessoes = view.findViewById(R.id.container_sessoes);
+        textoSemSessoes = view.findViewById(R.id.texto_sem_sessoes);
         areaComSessao = view.findViewById(R.id.area_com_sessao);
         areaResultado = view.findViewById(R.id.area_resultado);
         valorEsperados = view.findViewById(R.id.valor_esperados);
@@ -75,7 +80,62 @@ public class InventarioFragment extends Fragment {
             carregarResultado(SessaoInventario.getFinalizado());
         } else {
             mostrarArea(areaSemSessao);
+            carregarSessoes();
         }
+    }
+
+    private void carregarSessoes() {
+        servico().listarSessoes().enqueue(new Callback<List<SessaoResposta>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<SessaoResposta>> call, @NonNull Response<List<SessaoResposta>> resposta) {
+                if (isAdded() && resposta.isSuccessful() && resposta.body() != null) {
+                    mostrarSessoes(resposta.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<SessaoResposta>> call, @NonNull Throwable erro) {
+            }
+        });
+    }
+
+    private void mostrarSessoes(List<SessaoResposta> sessoes) {
+        containerSessoes.removeAllViews();
+        int mostradas = 0;
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        for (int i = sessoes.size() - 1; i >= 0 && mostradas < 6; i--) {
+            SessaoResposta sessao = sessoes.get(i);
+            View linha = inflater.inflate(R.layout.item_sessao, containerSessoes, false);
+            ((TextView) linha.findViewById(R.id.sessao_data)).setText(formatarData(sessao.dataInicio));
+            boolean finalizada = "finalizada".equalsIgnoreCase(sessao.status);
+            TextView status = linha.findViewById(R.id.sessao_status);
+            status.setText(finalizada ? R.string.inv_finalizado : R.string.inv_aberto);
+            status.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(),
+                    finalizada ? R.color.verde : R.color.texto_secundario));
+            if (mostradas > 0) {
+                View div = new View(requireContext());
+                div.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        (int) getResources().getDisplayMetrics().density));
+                div.setBackgroundColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.linha));
+                containerSessoes.addView(div);
+            }
+            containerSessoes.addView(linha);
+            mostradas++;
+        }
+        textoSemSessoes.setVisibility(mostradas == 0 ? View.VISIBLE : View.GONE);
+        if (mostradas == 0) {
+            containerSessoes.addView(textoSemSessoes);
+        }
+    }
+
+    private String formatarData(String iso) {
+        if (iso == null || iso.length() < 10) {
+            return "-";
+        }
+        String dia = iso.substring(8, 10);
+        String mes = iso.substring(5, 7);
+        String ano = iso.substring(0, 4);
+        return dia + "/" + mes + "/" + ano;
     }
 
     private void mostrarArea(View area) {

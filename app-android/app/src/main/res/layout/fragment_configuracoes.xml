@@ -3,47 +3,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/fundo"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="16dp">
 
     <TextView
+        android:id="@+id/config_voltar"
+        style="@style/Voltar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/config_titulo"
-        android:textSize="20sp"
-        android:paddingBottom="16dp" />
+        android:text="@string/config_voltar" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/config_ip" />
-
-    <EditText
-        android:id="@+id/campo_ip"
+        style="@style/Titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/config_ip_dica"
-        android:inputType="text"
-        android:autofillHints="" />
+        android:layout_marginTop="4dp"
+        android:text="@string/config_titulo" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/config_porta"
-        android:paddingTop="12dp" />
-
-    <EditText
-        android:id="@+id/campo_porta"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Cartao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/config_porta_dica"
-        android:inputType="number"
-        android:autofillHints="" />
+        android:layout_marginTop="16dp">
 
-    <Button
-        android:id="@+id/botao_salvar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/config_salvar" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView style="@style/CampoRotulo" android:text="@string/config_ip" />
+            <EditText
+                android:id="@+id/campo_ip"
+                style="@style/Campo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/config_ip_dica"
+                android:inputType="text"
+                android:autofillHints="" />
+
+            <TextView style="@style/CampoRotulo" android:layout_marginTop="16dp" android:text="@string/config_porta" />
+            <EditText
+                android:id="@+id/campo_porta"
+                style="@style/Campo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/config_porta_dica"
+                android:inputType="number"
+                android:autofillHints="" />
+
+            <Button
+                android:id="@+id/botao_salvar"
+                style="@style/Botao.Principal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/config_salvar" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
