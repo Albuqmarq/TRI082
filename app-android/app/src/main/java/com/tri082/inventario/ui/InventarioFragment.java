@@ -2,6 +2,7 @@
 
 package com.tri082.inventario.ui;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.tri082.inventario.R;
@@ -21,8 +23,14 @@ import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.ResultadoInventario;
 import com.tri082.inventario.data.remote.SessaoResposta;
+import com.tri082.inventario.util.Cores;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,9 +45,12 @@ public class InventarioFragment extends Fragment {
     private TextView valorEncontrados;
     private TextView valorAusentes;
     private TextView valorNaoId;
-    private TextView textoEncontrados;
-    private TextView textoAusentes;
-    private TextView textoNaoId;
+    private LinearLayout listaEncontrados;
+    private LinearLayout listaAusentes;
+    private LinearLayout listaNaoId;
+    private TextView contadorEncontrados;
+    private TextView contadorAusentes;
+    private TextView contadorNaoId;
     private LinearLayout containerSessoes;
     private TextView textoSemSessoes;
 
@@ -57,9 +68,12 @@ public class InventarioFragment extends Fragment {
         valorEncontrados = view.findViewById(R.id.valor_encontrados);
         valorAusentes = view.findViewById(R.id.valor_ausentes);
         valorNaoId = view.findViewById(R.id.valor_naoid);
-        textoEncontrados = view.findViewById(R.id.texto_encontrados);
-        textoAusentes = view.findViewById(R.id.texto_ausentes);
-        textoNaoId = view.findViewById(R.id.texto_nao_id);
+        listaEncontrados = view.findViewById(R.id.lista_encontrados);
+        listaAusentes = view.findViewById(R.id.lista_ausentes);
+        listaNaoId = view.findViewById(R.id.lista_naoid);
+        contadorEncontrados = view.findViewById(R.id.contador_encontrados);
+        contadorAusentes = view.findViewById(R.id.contador_ausentes);
+        contadorNaoId = view.findViewById(R.id.contador_naoid);
 
         view.findViewById(R.id.botao_iniciar).setOnClickListener(v -> iniciar());
         view.findViewById(R.id.botao_finalizar).setOnClickListener(v -> finalizar());
@@ -101,41 +115,45 @@ public class InventarioFragment extends Fragment {
 
     private void mostrarSessoes(List<SessaoResposta> sessoes) {
         containerSessoes.removeAllViews();
-        int mostradas = 0;
         LayoutInflater inflater = LayoutInflater.from(requireContext());
-        for (int i = sessoes.size() - 1; i >= 0 && mostradas < 6; i--) {
-            SessaoResposta sessao = sessoes.get(i);
+        int mostradas = 0;
+        for (SessaoResposta sessao : sessoes) {
+            boolean real = "finalizada".equalsIgnoreCase(sessao.status) && sessao.totalLeituras > 0;
+            if (!real) {
+                continue;
+            }
             View linha = inflater.inflate(R.layout.item_sessao, containerSessoes, false);
             ((TextView) linha.findViewById(R.id.sessao_data)).setText(formatarData(sessao.dataInicio));
-            boolean finalizada = "finalizada".equalsIgnoreCase(sessao.status);
+            ((TextView) linha.findViewById(R.id.sessao_tags)).setText(
+                    getResources().getQuantityString(R.plurals.inv_tags, sessao.totalLeituras, sessao.totalLeituras));
             TextView status = linha.findViewById(R.id.sessao_status);
-            status.setText(finalizada ? R.string.inv_finalizado : R.string.inv_aberto);
-            status.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(),
-                    finalizada ? R.color.verde : R.color.texto_secundario));
-            if (mostradas > 0) {
-                View div = new View(requireContext());
-                div.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        (int) getResources().getDisplayMetrics().density));
-                div.setBackgroundColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.linha));
-                containerSessoes.addView(div);
-            }
-            containerSessoes.addView(linha);
+            status.setText(R.string.inv_finalizado);
+            status.setTextColor(ContextCompat.getColor(requireContext(), R.color.verde));
+            adicionarLinha(containerSessoes, linha);
             mostradas++;
+            if (mostradas == 6) {
+                break;
+            }
         }
-        textoSemSessoes.setVisibility(mostradas == 0 ? View.VISIBLE : View.GONE);
         if (mostradas == 0) {
+            textoSemSessoes.setVisibility(View.VISIBLE);
             containerSessoes.addView(textoSemSessoes);
         }
     }
 
+    // A API devolve a data em UTC (ISO 8601); aqui ela vira data e hora local.
     private String formatarData(String iso) {
-        if (iso == null || iso.length() < 10) {
+        if (iso == null || iso.length() < 19) {
             return "-";
         }
-        String dia = iso.substring(8, 10);
-        String mes = iso.substring(5, 7);
-        String ano = iso.substring(0, 4);
-        return dia + "/" + mes + "/" + ano;
+        try {
+            SimpleDateFormat entrada = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT);
+            entrada.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date data = entrada.parse(iso.substring(0, 19));
+            return new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm", new Locale("pt", "BR")).format(data);
+        } catch (ParseException invalida) {
+            return iso.substring(0, 10);
+        }
     }
 
     private void mostrarArea(View area) {
@@ -216,12 +234,9 @@ public class InventarioFragment extends Fragment {
         valorEncontrados.setText(String.valueOf(r.totalEncontrados));
         valorAusentes.setText(String.valueOf(r.totalAusentes));
         valorNaoId.setText(String.valueOf(r.totalNaoIdentificados));
-        textoEncontrados.setText(getString(R.string.inv_encontrados, tamanho(resultado.esperadosEncontrados))
-                + "\n" + nomes(resultado.esperadosEncontrados));
-        textoAusentes.setText(getString(R.string.inv_ausentes, tamanho(resultado.esperadosAusentes))
-                + "\n" + nomes(resultado.esperadosAusentes));
-        textoNaoId.setText(getString(R.string.inv_nao_identificados, tamanho(resultado.naoIdentificados))
-                + "\n" + epcs(resultado.naoIdentificados));
+        preencherItens(listaAusentes, contadorAusentes, resultado.esperadosAusentes);
+        preencherItens(listaEncontrados, contadorEncontrados, resultado.esperadosEncontrados);
+        preencherNaoIdentificados(resultado.naoIdentificados);
     }
 
     private void novo() {
@@ -234,35 +249,75 @@ public class InventarioFragment extends Fragment {
         return lista == null ? 0 : lista.size();
     }
 
-    private String nomes(List<ResultadoInventario.ItemResumo> itens) {
+    private void preencherItens(LinearLayout lista, TextView contador, List<ResultadoInventario.ItemResumo> itens) {
+        lista.removeAllViews();
+        contador.setText(String.valueOf(tamanho(itens)));
         if (itens == null || itens.isEmpty()) {
-            return "-";
+            adicionarVazio(lista);
+            return;
         }
-        StringBuilder texto = new StringBuilder();
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         for (ResultadoInventario.ItemResumo item : itens) {
-            if (texto.length() > 0) {
-                texto.append("\n");
+            View linha = inflater.inflate(R.layout.item_catalogo, lista, false);
+            ((TextView) linha.findViewById(R.id.item_nome)).setText(item.nome);
+            boolean temCor = item.cor != null && !item.cor.isEmpty();
+            String tipo = item.tipo != null ? item.tipo : "";
+            ((TextView) linha.findViewById(R.id.item_detalhe)).setText(
+                    temCor ? item.cor + "  ·  " + tipo : tipo);
+            linha.findViewById(R.id.item_categoria).setVisibility(View.GONE);
+            View swatch = linha.findViewById(R.id.item_swatch);
+            Integer valorCor = Cores.paraCor(item.cor);
+            if (valorCor != null) {
+                GradientDrawable fundo = (GradientDrawable) ContextCompat
+                        .getDrawable(requireContext(), R.drawable.swatch_cor).mutate();
+                fundo.setColor(valorCor);
+                swatch.setBackground(fundo);
+            } else {
+                swatch.setVisibility(View.GONE);
             }
-            texto.append(item.nome);
-            if (item.cor != null && !item.cor.isEmpty()) {
-                texto.append(" (").append(item.cor).append(")");
-            }
+            adicionarLinha(lista, linha);
         }
-        return texto.toString();
     }
 
-    private String epcs(List<ResultadoInventario.LeituraResumo> leituras) {
+    private void preencherNaoIdentificados(List<ResultadoInventario.LeituraResumo> leituras) {
+        listaNaoId.removeAllViews();
+        contadorNaoId.setText(String.valueOf(tamanho(leituras)));
         if (leituras == null || leituras.isEmpty()) {
-            return "-";
+            adicionarVazio(listaNaoId);
+            return;
         }
-        StringBuilder texto = new StringBuilder();
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         for (ResultadoInventario.LeituraResumo leitura : leituras) {
-            if (texto.length() > 0) {
-                texto.append("\n");
-            }
-            texto.append(leitura.epc);
+            View linha = inflater.inflate(R.layout.item_leitura, listaNaoId, false);
+            TextView nome = linha.findViewById(R.id.item_nome);
+            nome.setText(R.string.leitura_tag_sem_cadastro);
+            nome.setTextColor(ContextCompat.getColor(requireContext(), R.color.texto_secundario));
+            ((TextView) linha.findViewById(R.id.item_epc)).setText(leitura.epc);
+            linha.findViewById(R.id.item_status).setVisibility(View.GONE);
+            linha.setBackground(null);
+            adicionarLinha(listaNaoId, linha);
         }
-        return texto.toString();
+    }
+
+    private void adicionarLinha(LinearLayout lista, View linha) {
+        if (lista.getChildCount() > 0) {
+            View divisoria = new View(requireContext());
+            divisoria.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    Math.max(1, (int) getResources().getDisplayMetrics().density)));
+            divisoria.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.linha));
+            lista.addView(divisoria);
+        }
+        lista.addView(linha);
+    }
+
+    private void adicionarVazio(LinearLayout lista) {
+        TextView vazio = new TextView(requireContext());
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        vazio.setPadding(pad, pad, pad, pad);
+        vazio.setText(R.string.inv_lista_vazia);
+        vazio.setTextSize(13);
+        vazio.setTextColor(ContextCompat.getColor(requireContext(), R.color.texto_secundario));
+        lista.addView(vazio);
     }
 
     private void erro() {

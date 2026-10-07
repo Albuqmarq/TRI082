@@ -7,14 +7,28 @@
     android:paddingHorizontal="16dp"
     android:paddingVertical="13dp">
 
-    <TextView
-        android:id="@+id/sessao_data"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/texto"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif-medium" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/sessao_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/texto"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium" />
+
+        <TextView
+            android:id="@+id/sessao_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/texto_secundario"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/sessao_status"

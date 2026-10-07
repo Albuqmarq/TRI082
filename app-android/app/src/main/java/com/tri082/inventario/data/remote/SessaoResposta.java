@@ -17,4 +17,7 @@ public class SessaoResposta {
 
     @SerializedName("data_fim")
     public String dataFim;
+
+    @SerializedName("total_leituras")
+    public int totalLeituras;
 }
