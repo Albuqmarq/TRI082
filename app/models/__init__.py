@@ -3,6 +3,7 @@
 from app.models.item import Item
 from app.models.leitura import Leitura
 from app.models.sessao_inventario import SessaoInventario
+from app.models.tag_ignorada import TagIgnorada
 from app.models.usuario import Usuario
 
-__all__ = ["Usuario", "Item", "SessaoInventario", "Leitura"]
+__all__ = ["Usuario", "Item", "SessaoInventario", "Leitura", "TagIgnorada"]

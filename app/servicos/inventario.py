@@ -8,9 +8,11 @@ from sqlalchemy.orm import Session
 from app.enums import StatusItem, StatusLeitura, StatusSessao
 from app.models.leitura import Leitura
 from app.models.sessao_inventario import SessaoInventario
+from app.models.tag_ignorada import TagIgnorada
 from app.repositorios import itens as repositorio_itens
 from app.repositorios import leituras as repositorio_leituras
 from app.repositorios import sessoes as repositorio_sessoes
+from app.repositorios import tags_ignoradas as repositorio_ignoradas
 from app.schemas.inventario import LeituraCriar
 
 
@@ -137,8 +139,12 @@ def finalizar_sessao(sessao: Session, inventario_id: int, finalizado_por: int) -
 
 def listar_pendencias(sessao: Session) -> list[dict]:
     leituras = repositorio_leituras.listar_nao_identificadas(sessao)
+    ignoradas = repositorio_ignoradas.listar_por_epc(sessao)
     agrupado: dict[str, dict] = {}
     for leitura in leituras:
+        ignorada_em = ignoradas.get(leitura.epc)
+        if ignorada_em is not None and leitura.timestamp <= ignorada_em:
+            continue
         item = repositorio_itens.obter_por_epc(sessao, leitura.epc)
         if item is not None and item.status == StatusItem.ativo.value:
             continue
@@ -152,3 +158,20 @@ def listar_pendencias(sessao: Session) -> list[dict]:
         if leitura.timestamp > agrupado[leitura.epc]["ultima_leitura"]:
             agrupado[leitura.epc]["ultima_leitura"] = leitura.timestamp
     return list(agrupado.values())
+
+
+def ignorar_tag(sessao: Session, epc: str, usuario_id: int) -> None:
+    epc = epc.strip()
+    item = repositorio_itens.obter_por_epc(sessao, epc)
+    if item is not None and item.status == StatusItem.ativo.value:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A tag ja esta cadastrada como item",
+        )
+    tag = repositorio_ignoradas.obter_por_epc(sessao, epc)
+    if tag is None:
+        tag = TagIgnorada(epc=epc, ignorado_por=usuario_id)
+    else:
+        tag.ignorado_por = usuario_id
+    tag.ignorado_em = datetime.now(timezone.utc)
+    repositorio_ignoradas.salvar(sessao, tag)
