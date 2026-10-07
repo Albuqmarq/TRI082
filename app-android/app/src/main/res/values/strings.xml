@@ -150,4 +150,23 @@
     <string name="inv_lista_vazia">Nenhum item nesta categoria.</string>
     <string name="inv_novo">Novo inventário</string>
 
+    <string name="localizar_titulo">Localizar item</string>
+    <string name="localizar_epc_hint">EPC da tag</string>
+    <string name="localizar_escolher">Escolher do catálogo</string>
+    <string name="localizar_fechar">Fechar</string>
+    <string name="localizar_buscar_item">Buscar item</string>
+    <string name="localizar_iniciar">Localizar</string>
+    <string name="localizar_parar">Parar</string>
+    <string name="localizar_status_pronto">Leitor pronto. Escolha o item ou digite o EPC e toque em Localizar.</string>
+    <string name="localizar_informe_epc">Informe o EPC ou escolha um item do catálogo</string>
+    <string name="localizar_rssi_label">Sinal RSSI</string>
+    <string name="localizar_sinal">%1$d</string>
+    <string name="localizar_melhor">Mais perto até agora: %1$d</string>
+    <string name="localizar_frase">Quanto maior o número, mais perto do item.</string>
+    <string name="localizar_procurando">Procurando o sinal... aproxime o coletor.</string>
+    <string name="localizar_sem_itens">Nenhum item para escolher</string>
+    <string name="localizar_muito_perto">Muito perto</string>
+    <string name="localizar_perto">Perto</string>
+    <string name="localizar_medio">Sinal médio</string>
+    <string name="localizar_fraco">Sinal fraco</string>
 </resources>
