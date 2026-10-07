@@ -55,7 +55,8 @@ public class PainelFragment extends Fragment {
                 v -> Navigation.findNavController(v).navigate(R.id.itemFormFragment));
         view.findViewById(R.id.linha_leitura).setOnClickListener(v -> irPara(v, R.id.leituraFragment));
         view.findViewById(R.id.linha_inventario).setOnClickListener(v -> irPara(v, R.id.inventarioFragment));
-        view.findViewById(R.id.botao_revisar).setOnClickListener(v -> irPara(v, R.id.leituraFragment));
+        view.findViewById(R.id.botao_revisar).setOnClickListener(
+                v -> Navigation.findNavController(v).navigate(R.id.pendenciasFragment));
         view.findViewById(R.id.botao_config).setOnClickListener(
                 v -> Navigation.findNavController(v).navigate(R.id.configuracoesFragment));
         view.findViewById(R.id.botao_sair).setOnClickListener(this::sair);

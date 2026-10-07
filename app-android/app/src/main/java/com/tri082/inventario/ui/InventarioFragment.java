@@ -24,13 +24,9 @@ import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.ResultadoInventario;
 import com.tri082.inventario.data.remote.SessaoResposta;
 import com.tri082.inventario.util.Cores;
+import com.tri082.inventario.util.Datas;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -123,7 +119,7 @@ public class InventarioFragment extends Fragment {
                 continue;
             }
             View linha = inflater.inflate(R.layout.item_sessao, containerSessoes, false);
-            ((TextView) linha.findViewById(R.id.sessao_data)).setText(formatarData(sessao.dataInicio));
+            ((TextView) linha.findViewById(R.id.sessao_data)).setText(Datas.paraTexto(sessao.dataInicio));
             ((TextView) linha.findViewById(R.id.sessao_tags)).setText(
                     getResources().getQuantityString(R.plurals.inv_tags, sessao.totalLeituras, sessao.totalLeituras));
             TextView status = linha.findViewById(R.id.sessao_status);
@@ -138,21 +134,6 @@ public class InventarioFragment extends Fragment {
         if (mostradas == 0) {
             textoSemSessoes.setVisibility(View.VISIBLE);
             containerSessoes.addView(textoSemSessoes);
-        }
-    }
-
-    // A API devolve a data em UTC (ISO 8601); aqui ela vira data e hora local.
-    private String formatarData(String iso) {
-        if (iso == null || iso.length() < 19) {
-            return "-";
-        }
-        try {
-            SimpleDateFormat entrada = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT);
-            entrada.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date data = entrada.parse(iso.substring(0, 19));
-            return new SimpleDateFormat("dd/MM/yyyy 'às' HH:mm", new Locale("pt", "BR")).format(data);
-        } catch (ParseException invalida) {
-            return iso.substring(0, 10);
         }
     }
 

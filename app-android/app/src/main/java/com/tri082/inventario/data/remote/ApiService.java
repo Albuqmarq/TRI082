@@ -58,4 +58,7 @@ public interface ApiService {
 
     @GET("pendencias")
     Call<List<Pendencia>> listarPendencias();
+
+    @POST("pendencias/{epc}/ignorar")
+    Call<Void> ignorarTag(@Path("epc") String epc);
 }

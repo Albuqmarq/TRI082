@@ -150,6 +150,26 @@
     <string name="inv_lista_vazia">Nenhum item nesta categoria.</string>
     <string name="inv_novo">Novo inventário</string>
 
+    <string name="pend_voltar">Voltar para Painel</string>
+    <string name="pend_titulo">Pendências</string>
+    <string name="pend_descricao">Tags lidas que ainda não têm item no catálogo. Toque numa tag para cadastrar ou ignorar.</string>
+    <string name="pend_vazio">Nenhuma pendência. Todas as tags lidas já têm cadastro.</string>
+    <string name="pend_erro">Não foi possível carregar as pendências</string>
+    <string name="pend_resolver">Resolver</string>
+    <string name="pend_cadastrar_item">Cadastrar item</string>
+    <string name="pend_ignorar">Ignorar tag</string>
+    <string name="pend_ignorar_ajuda">Use para tags que não são produtos. Ela sai das pendências agora; se for lida de novo, volta a aparecer. A tag pode ser cadastrada num item a qualquer momento.</string>
+    <string name="pend_ignorada">Tag ignorada</string>
+    <string name="pend_erro_ignorar">Não foi possível ignorar a tag</string>
+    <plurals name="pend_contagem">
+        <item quantity="one">%1$d tag sem cadastro</item>
+        <item quantity="other">%1$d tags sem cadastro</item>
+    </plurals>
+    <plurals name="pend_leituras">
+        <item quantity="one">Lida %1$d vez, última em %2$s</item>
+        <item quantity="other">Lida %1$d vezes, última em %2$s</item>
+    </plurals>
+
     <string name="localizar_titulo">Localizar item</string>
     <string name="localizar_epc_hint">EPC da tag</string>
     <string name="localizar_escolher">Escolher do catálogo</string>

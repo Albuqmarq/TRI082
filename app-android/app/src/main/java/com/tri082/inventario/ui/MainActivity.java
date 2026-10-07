@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
             boolean semAbas = id == R.id.loginFragment
                     || id == R.id.configuracoesFragment
                     || id == R.id.itemDetalheFragment
-                    || id == R.id.itemFormFragment;
+                    || id == R.id.itemFormFragment
+                    || id == R.id.pendenciasFragment;
             bottomNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);
             linhaNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);
             ajustarRodape();
