@@ -24,10 +24,10 @@ import com.tri082.inventario.R;
 import com.tri082.inventario.data.local.EstadoLeitura;
 import com.tri082.inventario.data.local.Sessao;
 import com.tri082.inventario.data.local.SessaoInventario;
+import com.tri082.inventario.data.repository.FilaLeituras;
 import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Item;
-import com.tri082.inventario.data.remote.LeituraRequisicao;
 import com.tri082.inventario.rfid.LeitorRfid;
 
 import retrofit2.Call;
@@ -42,6 +42,9 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
     private LeiturasAdapter adapter;
     private TextView textoStatus;
     private TextView textoContagem;
+    private View areaFila;
+    private TextView textoFila;
+    private final Runnable aoMudarFila = this::atualizarFila;
     private Button botaoLer;
     private boolean disponivel = false;
     private boolean lendo = false;
@@ -54,6 +57,9 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         textoStatus = view.findViewById(R.id.texto_status);
         textoContagem = view.findViewById(R.id.texto_contagem);
         botaoLer = view.findViewById(R.id.botao_ler);
+        areaFila = view.findViewById(R.id.area_fila);
+        textoFila = view.findViewById(R.id.texto_fila);
+        view.findViewById(R.id.botao_sincronizar).setOnClickListener(v -> sincronizar());
         RecyclerView lista = view.findViewById(R.id.lista_leituras);
 
         adapter = new LeiturasAdapter(this::aoClicarTag, this::aoSegurarTag);
@@ -77,6 +83,8 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         leitor.iniciar(requireContext(), this);
         ((MainActivity) requireActivity()).registrarGatilho(this::iniciarLeitura, this::pararSeLendo);
         resolverNomesPendentes();
+        FilaLeituras.adicionarOuvinte(aoMudarFila);
+        atualizarFila();
     }
 
     @Override
@@ -86,6 +94,7 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         leitor.liberar();
         ((MainActivity) requireActivity()).removerGatilho();
         ui.removeCallbacks(atualizacao);
+        FilaLeituras.removerOuvinte(aoMudarFila);
     }
 
     @Override
@@ -175,20 +184,27 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
 
     private void registrarNaSessao(String epc) {
         Integer id = SessaoInventario.getAtivo();
-        if (id == null) {
-            return;
+        if (id != null) {
+            FilaLeituras.enviar(requireContext(), id, epc, "DT50P");
         }
-        ClienteApi.criarServico(requireContext())
-                .registrarLeitura(id, new LeituraRequisicao(epc, "DT50P"))
-                .enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> resposta) {
-                    }
+    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable erro) {
-                    }
-                });
+    private void atualizarFila() {
+        FilaLeituras.contar(requireContext(), total -> {
+            if (!isAdded()) {
+                return;
+            }
+            areaFila.setVisibility(total > 0 ? View.VISIBLE : View.GONE);
+            textoFila.setText(getResources().getQuantityString(R.plurals.fila_pendentes, total, total));
+        });
+    }
+
+    private void sincronizar() {
+        FilaLeituras.sincronizar(requireContext(), resultado -> {
+            if (isAdded()) {
+                AvisoSincronizacao.mostrar(requireContext(), resultado);
+            }
+        });
     }
 
     private void resolverNomesPendentes() {

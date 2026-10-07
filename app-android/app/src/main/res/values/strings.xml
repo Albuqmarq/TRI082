@@ -15,6 +15,7 @@
     <string name="painel_itens">Itens no catálogo</string>
     <string name="painel_pendentes_envio">Envios pendentes</string>
     <string name="painel_sincronizado">Tudo sincronizado</string>
+    <string name="painel_aguardando">Aguardando envio</string>
     <string name="painel_pendencias_titulo">%1$d tags sem cadastro</string>
     <string name="painel_pendencias_desc">Foram lidas, mas ainda não estão ligadas a um item do catálogo.</string>
     <string name="painel_revisar">Revisar pendências</string>
@@ -149,6 +150,24 @@
     <string name="inv_naoid_titulo">Não identificados</string>
     <string name="inv_lista_vazia">Nenhum item nesta categoria.</string>
     <string name="inv_novo">Novo inventário</string>
+
+    <string name="fila_sincronizar">Sincronizar</string>
+    <string name="fila_sincronizar_agora">Sincronizar agora</string>
+    <string name="fila_sem_conexao">Sem conexão com a API. As leituras continuam guardadas no coletor.</string>
+    <string name="fila_servidor_indisponivel">A API não aceitou o envio agora. As leituras continuam guardadas no coletor.</string>
+    <string name="fila_nada">Nenhuma leitura aguardando envio</string>
+    <plurals name="fila_enviadas">
+        <item quantity="one">%1$d leitura enviada</item>
+        <item quantity="other">%1$d leituras enviadas</item>
+    </plurals>
+    <plurals name="fila_pendentes">
+        <item quantity="one">%1$d leitura aguardando envio</item>
+        <item quantity="other">%1$d leituras aguardando envio</item>
+    </plurals>
+    <plurals name="inv_finalizar_pendentes">
+        <item quantity="one">%1$d leitura ainda não foi enviada. Conecte-se à rede e finalize de novo.</item>
+        <item quantity="other">%1$d leituras ainda não foram enviadas. Conecte-se à rede e finalize de novo.</item>
+    </plurals>
 
     <string name="pend_voltar">Voltar para Painel</string>
     <string name="pend_titulo">Pendências</string>

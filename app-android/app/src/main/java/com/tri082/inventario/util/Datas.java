@@ -1,4 +1,4 @@
-// Converte as datas da API (UTC, formato ISO 8601) para data e hora local, ex.: 07/10/2026 às 09:48.
+// Datas trocadas com a API (UTC, formato ISO 8601): converte para data e hora local e gera o horario atual.
 
 package com.tri082.inventario.util;
 
@@ -27,4 +27,9 @@ public final class Datas {
         }
     }
 
+    public static String agoraIso() {
+        SimpleDateFormat saida = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ROOT);
+        saida.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return saida.format(new Date());
+    }
 }

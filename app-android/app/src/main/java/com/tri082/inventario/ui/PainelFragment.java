@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -20,6 +21,7 @@ import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Item;
 import com.tri082.inventario.data.remote.Pendencia;
+import com.tri082.inventario.data.repository.FilaLeituras;
 
 import java.util.List;
 
@@ -33,6 +35,10 @@ public class PainelFragment extends Fragment {
     private TextView valorItens;
     private TextView textoPendenciasTitulo;
     private View cardPendencias;
+    private TextView valorPendentesEnvio;
+    private TextView textoSincronia;
+    private View botaoSincronizar;
+    private final Runnable aoMudarFila = this::atualizarFila;
 
     @Nullable
     @Override
@@ -43,6 +49,10 @@ public class PainelFragment extends Fragment {
         valorItens = view.findViewById(R.id.valor_itens);
         textoPendenciasTitulo = view.findViewById(R.id.texto_pendencias_titulo);
         cardPendencias = view.findViewById(R.id.card_pendencias);
+        valorPendentesEnvio = view.findViewById(R.id.valor_pendentes_envio);
+        textoSincronia = view.findViewById(R.id.texto_sincronia);
+        botaoSincronizar = view.findViewById(R.id.botao_sincronizar_painel);
+        botaoSincronizar.setOnClickListener(v -> sincronizar());
 
         boolean admin = Sessao.ehAdmin();
         textoPapel.setText(getString(R.string.painel_papel,
@@ -66,10 +76,40 @@ public class PainelFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        FilaLeituras.adicionarOuvinte(aoMudarFila);
+        atualizarFila();
         carregarItens();
         if (Sessao.ehAdmin()) {
             carregarPendencias();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        FilaLeituras.removerOuvinte(aoMudarFila);
+    }
+
+    private void atualizarFila() {
+        FilaLeituras.contar(requireContext(), total -> {
+            if (!isAdded()) {
+                return;
+            }
+            valorPendentesEnvio.setText(String.valueOf(total));
+            boolean temPendentes = total > 0;
+            textoSincronia.setText(temPendentes ? R.string.painel_aguardando : R.string.painel_sincronizado);
+            textoSincronia.setTextColor(ContextCompat.getColor(requireContext(),
+                    temPendentes ? R.color.alerta_texto : R.color.verde));
+            botaoSincronizar.setVisibility(temPendentes ? View.VISIBLE : View.GONE);
+        });
+    }
+
+    private void sincronizar() {
+        FilaLeituras.sincronizar(requireContext(), resultado -> {
+            if (isAdded()) {
+                AvisoSincronizacao.mostrar(requireContext(), resultado);
+            }
+        });
     }
 
     private void irPara(View origem, int destino) {

@@ -23,6 +23,7 @@ import com.tri082.inventario.data.remote.ApiService;
 import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.ResultadoInventario;
 import com.tri082.inventario.data.remote.SessaoResposta;
+import com.tri082.inventario.data.repository.FilaLeituras;
 import com.tri082.inventario.util.Cores;
 import com.tri082.inventario.util.Datas;
 
@@ -167,11 +168,36 @@ public class InventarioFragment extends Fragment {
         });
     }
 
+    // Antes de finalizar, tenta enviar as leituras desta sessao que ficaram na fila; sem isso o resultado sairia incompleto.
     private void finalizar() {
         Integer id = SessaoInventario.getAtivo();
         if (id == null) {
             return;
         }
+        FilaLeituras.contarDaSessao(requireContext(), id, pendentes -> {
+            if (!isAdded()) {
+                return;
+            }
+            if (pendentes == 0) {
+                enviarFinalizacao(id);
+                return;
+            }
+            FilaLeituras.sincronizar(requireContext(), resultado ->
+                    FilaLeituras.contarDaSessao(requireContext(), id, restantes -> {
+                        if (!isAdded()) {
+                            return;
+                        }
+                        if (restantes == 0) {
+                            enviarFinalizacao(id);
+                        } else {
+                            Toast.makeText(requireContext(), getResources().getQuantityString(
+                                    R.plurals.inv_finalizar_pendentes, restantes, restantes), Toast.LENGTH_LONG).show();
+                        }
+                    }));
+        });
+    }
+
+    private void enviarFinalizacao(int id) {
         servico().finalizarInventario(id).enqueue(new Callback<ResultadoInventario>() {
             @Override
             public void onResponse(@NonNull Call<ResultadoInventario> call, @NonNull Response<ResultadoInventario> resposta) {
