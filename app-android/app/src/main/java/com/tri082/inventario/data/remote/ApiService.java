@@ -20,6 +20,15 @@ public interface ApiService {
     @GET("usuarios/me")
     Call<UsuarioResposta> obterMeusDados();
 
+    @GET("usuarios")
+    Call<List<UsuarioResposta>> listarUsuarios();
+
+    @POST("usuarios")
+    Call<UsuarioResposta> criarUsuario(@Body UsuarioCriar usuario);
+
+    @PATCH("usuarios/{id}")
+    Call<UsuarioResposta> atualizarUsuario(@Path("id") int id, @Body UsuarioAtualizar usuario);
+
     @GET("itens")
     Call<List<Item>> listarItens();
 

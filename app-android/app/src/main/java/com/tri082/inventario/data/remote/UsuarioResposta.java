@@ -1,4 +1,4 @@
-// Dados do usuario autenticado retornados pela API.
+// Dados de uma conta de usuario retornados pela API (o proprio usuario ou a lista do Administrador).
 
 package com.tri082.inventario.data.remote;
 

@@ -26,6 +26,9 @@
     <string name="painel_iniciar_leitura_sub">Ler tags com o coletor</string>
     <string name="painel_contagem">Contagem de estoque</string>
     <string name="painel_contagem_sub">Abrir sessão de inventário</string>
+    <string name="painel_usuarios">Usuários</string>
+    <string name="painel_usuarios_sub">Criar contas, trocar senhas e desativar acessos</string>
+    <string name="painel_administracao">Administração</string>
 
     <string name="config_voltar">Voltar</string>
     <string name="config_titulo">Endereço da API</string>
@@ -169,6 +172,40 @@
         <item quantity="other">%1$d leituras ainda não foram enviadas. Conecte-se à rede e finalize de novo.</item>
     </plurals>
 
+    <string name="usu_titulo">Usuários</string>
+    <string name="usu_novo">Novo usuário</string>
+    <string name="usu_ativo">Ativo</string>
+    <string name="usu_inativo">Inativo</string>
+    <string name="usu_erro_carregar">Não foi possível carregar os usuários</string>
+    <plurals name="usu_contagem">
+        <item quantity="one">%1$d conta</item>
+        <item quantity="other">%1$d contas</item>
+    </plurals>
+    <string name="uf_voltar">Voltar para Usuários</string>
+    <string name="uf_titulo_novo">Novo usuário</string>
+    <string name="uf_nome">Nome de usuário</string>
+    <string name="uf_nome_hint">Ex.: joao.silva</string>
+    <string name="uf_papel">Papel</string>
+    <string name="uf_senha">Senha</string>
+    <string name="uf_nova_senha">Nova senha</string>
+    <string name="uf_senha_hint">Mínimo de 6 caracteres</string>
+    <string name="uf_senha_ajuda_nova">A pessoa entra no coletor com esse nome e essa senha.</string>
+    <string name="uf_senha_ajuda_edicao">Deixe em branco para manter a senha atual.</string>
+    <string name="uf_ativo">Conta ativa</string>
+    <string name="uf_aviso_propria">Este é o único administrador ativo. Para desativá-lo ou mudar o papel, torne outra conta administradora antes. A senha pode ser trocada normalmente.</string>
+    <string name="uf_confirmar_propria_titulo">Alterar a sua própria conta?</string>
+    <string name="uf_confirmar_propria_msg">Você vai perder o acesso de administrador e sair do aplicativo.</string>
+    <string name="uf_confirmar">Continuar</string>
+    <string name="uf_saiu">Sua conta foi alterada. Entre novamente.</string>
+    <string name="uf_criar">Criar usuário</string>
+    <string name="uf_criado">Usuário criado</string>
+    <string name="uf_salvo">Alterações salvas</string>
+    <string name="uf_erro_nome">Informe o nome de usuário</string>
+    <string name="uf_erro_senha">A senha precisa ter pelo menos 6 caracteres</string>
+    <string name="uf_erro_duplicado">Já existe um usuário com esse nome</string>
+    <string name="uf_erro_propria">É preciso manter pelo menos um administrador ativo</string>
+    <string name="uf_erro_salvar">Não foi possível salvar o usuário</string>
+
     <string name="pend_voltar">Voltar para Painel</string>
     <string name="pend_titulo">Pendências</string>
     <string name="pend_descricao">Tags lidas que ainda não têm item no catálogo. Toque numa tag para cadastrar ou ignorar.</string>
@@ -188,6 +225,7 @@
         <item quantity="one">Lida %1$d vez, última em %2$s</item>
         <item quantity="other">Lida %1$d vezes, última em %2$s</item>
     </plurals>
+
 
     <string name="localizar_titulo">Localizar item</string>
     <string name="localizar_epc_hint">EPC da tag</string>

@@ -95,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
                     || id == R.id.configuracoesFragment
                     || id == R.id.itemDetalheFragment
                     || id == R.id.itemFormFragment
-                    || id == R.id.pendenciasFragment;
+                    || id == R.id.pendenciasFragment
+                    || id == R.id.usuariosFragment
+                    || id == R.id.usuarioFormFragment;
             bottomNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);
             linhaNav.setVisibility(semAbas ? View.GONE : View.VISIBLE);
             ajustarRodape();

@@ -44,6 +44,14 @@
         android:name="com.tri082.inventario.ui.ItemDetalheFragment"
         android:label="@string/titulo_catalogo" />
     <fragment
+        android:id="@+id/usuariosFragment"
+        android:name="com.tri082.inventario.ui.UsuariosFragment"
+        android:label="@string/usu_titulo" />
+    <fragment
+        android:id="@+id/usuarioFormFragment"
+        android:name="com.tri082.inventario.ui.UsuarioFormFragment"
+        android:label="@string/usu_titulo" />
+    <fragment
         android:id="@+id/pendenciasFragment"
         android:name="com.tri082.inventario.ui.PendenciasFragment"
         android:label="@string/pend_titulo" />

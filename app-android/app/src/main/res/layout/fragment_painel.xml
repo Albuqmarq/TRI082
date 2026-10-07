@@ -211,6 +211,36 @@
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
+            android:id="@+id/area_administracao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/RotuloSecao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/painel_administracao" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Cartao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/linha_usuarios"
+                    style="@style/LinhaAcao">
+
+                    <TextView style="@style/LinhaAcaoTitulo" android:text="@string/painel_usuarios" />
+                    <TextView style="@style/LinhaAcaoSub" android:text="@string/painel_usuarios_sub" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

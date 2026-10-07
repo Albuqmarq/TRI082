@@ -60,6 +60,9 @@ public class PainelFragment extends Fragment {
 
         view.findViewById(R.id.linha_cadastrar).setVisibility(admin ? View.VISIBLE : View.GONE);
         view.findViewById(R.id.div_cadastrar).setVisibility(admin ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.area_administracao).setVisibility(admin ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.linha_usuarios).setOnClickListener(
+                v -> Navigation.findNavController(v).navigate(R.id.usuariosFragment));
 
         view.findViewById(R.id.linha_cadastrar).setOnClickListener(
                 v -> Navigation.findNavController(v).navigate(R.id.itemFormFragment));

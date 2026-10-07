@@ -199,4 +199,18 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:layout_marginBottom">6dp</item>
     </style>
+
+    <style name="ChipEscolha">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/chip_fundo</item>
+        <item name="android:textColor">@color/chip_texto</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">9dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
 </resources>
