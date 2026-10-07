@@ -83,6 +83,9 @@ def listar_leituras(sessao: Session, inventario_id: int) -> list[Leitura]:
 def calcular_resultado(sessao: Session, inventario_id: int) -> dict:
     inventario = obter_sessao_inventario(sessao, inventario_id)
     itens_ativos = repositorio_itens.listar_ativos(sessao)
+    if inventario.data_fim is not None:
+        # Contagem ja fechada: so conta como esperado o item que existia quando ela terminou.
+        itens_ativos = [item for item in itens_ativos if item.criado_em <= inventario.data_fim]
     leituras = repositorio_leituras.listar_por_sessao(sessao, inventario_id)
 
     ids_encontrados = set()
