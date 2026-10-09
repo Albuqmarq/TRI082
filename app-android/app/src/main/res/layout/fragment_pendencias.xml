@@ -31,6 +31,17 @@
         android:textSize="13sp"
         android:lineSpacingMultiplier="1.3" />
 
+    <EditText
+        android:id="@+id/pend_busca"
+        style="@style/Campo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/pend_buscar"
+        android:inputType="textNoSuggestions|textCapCharacters"
+        android:importantForAutofill="no"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/pend_contagem"
         style="@style/RotuloSecao"

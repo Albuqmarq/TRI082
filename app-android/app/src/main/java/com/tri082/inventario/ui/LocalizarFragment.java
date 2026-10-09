@@ -1,11 +1,19 @@
 // Tela de localizacao de item por sinal RFID: filtra pela tag escolhida e mostra o sinal em tempo real,
 // como uma bussola de proximidade. A leitura para ao sair da tela.
+// Avisa na tela quando a internet cai e quando o sinal da tag some por alguns segundos (com vibracao curta).
 
 package com.tri082.inventario.ui;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +53,12 @@ import retrofit2.Response;
 public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
 
     private static final long TEMPO_SEM_SINAL = 1200;
+    private static final long TEMPO_SINAL_PERDIDO = 3000;
 
     private final LeitorRfid leitor = new LeitorRfid();
     private final Handler ui = new Handler(Looper.getMainLooper());
     private final Runnable semSinal = this::marcarProcurando;
+    private final Runnable sinalPerdido = this::marcarSinalPerdido;
 
     private EditText campoEpc;
     private Button botaoLocalizar;
@@ -60,6 +70,20 @@ public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
     private TextView textoProcurando;
     private View cardSinal;
     private MedidorSinal medidor;
+    private View avisoInternet;
+    private View avisoSinal;
+    private ConnectivityManager conectividade;
+    private final ConnectivityManager.NetworkCallback aoMudarRede = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network rede) {
+            ui.post(LocalizarFragment.this::atualizarInternet);
+        }
+
+        @Override
+        public void onLost(@NonNull Network rede) {
+            ui.post(LocalizarFragment.this::atualizarInternet);
+        }
+    };
 
     private final List<Item> itensCatalogo = new ArrayList<>();
     private String alvo;
@@ -82,6 +106,9 @@ public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
         textoProcurando = view.findViewById(R.id.texto_procurando);
         cardSinal = view.findViewById(R.id.card_sinal);
         medidor = view.findViewById(R.id.medidor);
+        avisoInternet = view.findViewById(R.id.aviso_internet);
+        avisoSinal = view.findViewById(R.id.aviso_sinal);
+        conectividade = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         textoStatus.setText(R.string.leitura_status_verificando);
         botaoLocalizar.setOnClickListener(v -> alternar());
@@ -105,6 +132,8 @@ public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
         super.onStart();
         leitor.iniciar(requireContext(), this);
         ((MainActivity) requireActivity()).registrarGatilho(this::iniciarLocalizacao, this::pararLocalizacao);
+        conectividade.registerDefaultNetworkCallback(aoMudarRede);
+        atualizarInternet();
     }
 
     @Override
@@ -114,6 +143,8 @@ public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
         leitor.liberar();
         ((MainActivity) requireActivity()).removerGatilho();
         ui.removeCallbacks(semSinal);
+        ui.removeCallbacks(sinalPerdido);
+        conectividade.unregisterNetworkCallback(aoMudarRede);
     }
 
     @Override
@@ -170,6 +201,8 @@ public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
         localizando = false;
         leitor.desligarLeitura();
         ui.removeCallbacks(semSinal);
+        ui.removeCallbacks(sinalPerdido);
+        avisoSinal.setVisibility(View.GONE);
         botaoLocalizar.setText(R.string.localizar_iniciar);
     }
 
@@ -185,8 +218,11 @@ public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
         textoProcurando.setVisibility(View.GONE);
         int cor = aplicarRotulo(perto);
         medidor.definir(perto, ContextCompat.getColor(requireContext(), cor));
+        avisoSinal.setVisibility(View.GONE);
         ui.removeCallbacks(semSinal);
         ui.postDelayed(semSinal, TEMPO_SEM_SINAL);
+        ui.removeCallbacks(sinalPerdido);
+        ui.postDelayed(sinalPerdido, TEMPO_SINAL_PERDIDO);
     }
 
     // Escala fixa do arco: 20 (bem longe) fica quase vazio, 90 (encostado na tag) fica cheio.
@@ -225,6 +261,43 @@ public class LocalizarFragment extends Fragment implements LeitorRfid.Ouvinte {
         if (localizando) {
             textoProcurando.setVisibility(View.VISIBLE);
         }
+    }
+
+    // So avisa quando a tag ja tinha sido encontrada nessa busca e o sinal sumiu.
+    private void marcarSinalPerdido() {
+        if (!localizando || maisPerto == 0 || !isAdded()) {
+            return;
+        }
+        avisoSinal.setVisibility(View.VISIBLE);
+        textoSinal.setText("--");
+        textoProximidade.setText(R.string.localizar_sem_sinal);
+        pintar(textoSinal, R.color.texto_secundario);
+        pintar(textoProximidade, R.color.erro);
+        medidor.definir(0, ContextCompat.getColor(requireContext(), R.color.linha));
+        vibrar();
+    }
+
+    private void vibrar() {
+        Vibrator vibrador = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrador == null || !vibrador.hasVibrator()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrador.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrador.vibrate(300);
+        }
+    }
+
+    private void atualizarInternet() {
+        if (!isAdded()) {
+            return;
+        }
+        Network rede = conectividade.getActiveNetwork();
+        NetworkCapabilities capacidades = rede == null ? null : conectividade.getNetworkCapabilities(rede);
+        boolean conectado = capacidades != null
+                && capacidades.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        avisoInternet.setVisibility(conectado ? View.GONE : View.VISIBLE);
     }
 
     private void escolherDoCatalogo() {

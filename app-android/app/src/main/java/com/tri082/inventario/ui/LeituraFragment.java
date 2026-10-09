@@ -1,15 +1,20 @@
 // Tela de leitura RFID (tambem usada embutida no inventario em andamento): le pelo gatilho ou botao, mantem as leituras ao trocar de aba (limpa so no botao Limpar),
 // mostra o nome do item quando ja cadastrado e conta as leituras de cada tag (apoio de teste).
+// Ao voltar para a tela, consulta de novo as tags sem cadastro, para mostrar o nome de quem foi cadastrado nesse meio tempo.
+// O campo de busca filtra a lista por EPC, nome, tipo ou cor; o contador continua mostrando o total lido.
 
 package com.tri082.inventario.ui;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +35,10 @@ import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Item;
 import com.tri082.inventario.rfid.LeitorRfid;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,6 +55,8 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
     private TextView textoFila;
     private final Runnable aoMudarFila = this::atualizarFila;
     private Button botaoLer;
+    private EditText campoBusca;
+    private View textoBuscaVazia;
     private boolean disponivel = false;
     private boolean lendo = false;
 
@@ -61,6 +72,22 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         textoFila = view.findViewById(R.id.texto_fila);
         view.findViewById(R.id.botao_sincronizar).setOnClickListener(v -> sincronizar());
         RecyclerView lista = view.findViewById(R.id.lista_leituras);
+        textoBuscaVazia = view.findViewById(R.id.leitura_busca_vazia);
+        campoBusca = view.findViewById(R.id.leitura_busca);
+        campoBusca.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                atualizarLista();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
         if (getArguments() != null && getArguments().getBoolean("embutida", false)) {
             view.findViewById(R.id.leitura_titulo).setVisibility(View.GONE);
         }
@@ -115,7 +142,7 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
         EstadoLeitura.registrar(epc);
         agendarAtualizacao();
         if (nova) {
-            resolverDados(epc);
+            resolverDados(epc, true);
             if (SessaoInventario.ativa()) {
                 registrarNaSessao(epc);
             }
@@ -212,13 +239,13 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
 
     private void resolverNomesPendentes() {
         for (EstadoLeitura.Registro registro : EstadoLeitura.lista()) {
-            if (!registro.resolvida) {
-                resolverDados(registro.epc);
+            if (!registro.cadastrada) {
+                resolverDados(registro.epc, !registro.resolvida);
             }
         }
     }
 
-    private void resolverDados(String epc) {
+    private void resolverDados(String epc, boolean avisar) {
         ApiService servico = ClienteApi.criarServico(requireContext());
         servico.obterItemPorEpc(epc).enqueue(new Callback<Item>() {
             @Override
@@ -231,7 +258,9 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
                     EstadoLeitura.definirDados(epc, item.getId(), item.getNome(), item.getTipo(), item.getCor());
                 } else {
                     EstadoLeitura.definirNaoCadastrada(epc);
-                    avisarPendencia();
+                    if (avisar) {
+                        avisarPendencia();
+                    }
                 }
                 agendarAtualizacao();
             }
@@ -254,7 +283,20 @@ public class LeituraFragment extends Fragment implements LeitorRfid.Ouvinte {
     }
 
     private void atualizarLista() {
-        adapter.definir(EstadoLeitura.lista());
+        String termo = campoBusca.getText().toString().trim().toLowerCase(Locale.ROOT);
+        List<EstadoLeitura.Registro> filtradas = new ArrayList<>();
+        for (EstadoLeitura.Registro registro : EstadoLeitura.lista()) {
+            if (termo.isEmpty() || contem(registro.epc, termo.replace(" ", "")) || contem(registro.nome, termo)
+                    || contem(registro.tipo, termo) || contem(registro.cor, termo)) {
+                filtradas.add(registro);
+            }
+        }
+        adapter.definir(filtradas);
+        textoBuscaVazia.setVisibility(!termo.isEmpty() && filtradas.isEmpty() ? View.VISIBLE : View.GONE);
         textoContagem.setText(String.valueOf(EstadoLeitura.totalTags()));
+    }
+
+    private boolean contem(String valor, String termo) {
+        return valor != null && valor.toLowerCase(Locale.ROOT).contains(termo);
     }
 }

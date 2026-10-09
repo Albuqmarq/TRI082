@@ -1,12 +1,16 @@
 // Tela de pendencias de cadastro (somente Administrador): lista as tags lidas sem item no catalogo.
 // Cada tag pode ser cadastrada (abre o cadastro com o EPC preenchido) ou ignorada, quando nao e um produto.
+// O campo de busca filtra a lista pelo EPC enquanto o usuario digita.
 
 package com.tri082.inventario.ui;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +29,9 @@ import com.tri082.inventario.data.remote.ClienteApi;
 import com.tri082.inventario.data.remote.Pendencia;
 import com.tri082.inventario.util.Datas;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,7 +42,9 @@ public class PendenciasFragment extends Fragment {
     private PendenciasAdapter adapter;
     private TextView textoContagem;
     private View cartao;
-    private View textoVazio;
+    private TextView textoVazio;
+    private EditText campoBusca;
+    private final List<Pendencia> todas = new ArrayList<>();
 
     @Nullable
     @Override
@@ -53,6 +61,21 @@ public class PendenciasFragment extends Fragment {
         textoContagem = view.findViewById(R.id.pend_contagem);
         cartao = view.findViewById(R.id.pend_cartao);
         textoVazio = view.findViewById(R.id.pend_vazio);
+        campoBusca = view.findViewById(R.id.pend_busca);
+        campoBusca.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filtrar();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         adapter = new PendenciasAdapter(this::abrirOpcoes);
         RecyclerView lista = view.findViewById(R.id.pend_lista);
@@ -97,13 +120,30 @@ public class PendenciasFragment extends Fragment {
     }
 
     private void mostrar(List<Pendencia> pendencias) {
-        adapter.definir(pendencias);
-        boolean vazia = pendencias.isEmpty();
-        cartao.setVisibility(vazia ? View.GONE : View.VISIBLE);
-        textoContagem.setVisibility(vazia ? View.GONE : View.VISIBLE);
-        textoVazio.setVisibility(vazia ? View.VISIBLE : View.GONE);
+        todas.clear();
+        todas.addAll(pendencias);
+        filtrar();
+    }
+
+    private void filtrar() {
+        String termo = campoBusca.getText().toString().replace(" ", "").toUpperCase(Locale.ROOT);
+        List<Pendencia> filtradas = new ArrayList<>();
+        for (Pendencia pendencia : todas) {
+            if (pendencia.epc != null && pendencia.epc.toUpperCase(Locale.ROOT).contains(termo)) {
+                filtradas.add(pendencia);
+            }
+        }
+        adapter.definir(filtradas);
+
+        boolean semPendencias = todas.isEmpty();
+        boolean semResultado = filtradas.isEmpty();
+        campoBusca.setVisibility(semPendencias ? View.GONE : View.VISIBLE);
+        textoContagem.setVisibility(semPendencias ? View.GONE : View.VISIBLE);
+        cartao.setVisibility(semResultado ? View.GONE : View.VISIBLE);
+        textoVazio.setVisibility(semResultado ? View.VISIBLE : View.GONE);
+        textoVazio.setText(semPendencias ? R.string.pend_vazio : R.string.pend_busca_vazia);
         textoContagem.setText(getResources().getQuantityString(R.plurals.pend_contagem,
-                pendencias.size(), pendencias.size()));
+                filtradas.size(), filtradas.size()));
     }
 
     private void abrirOpcoes(Pendencia pendencia) {

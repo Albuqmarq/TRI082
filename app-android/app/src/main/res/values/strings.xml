@@ -125,6 +125,8 @@
     <string name="leitura_lida">lida %1$dx</string>
     <string name="leitura_tags_lidas">tags lidas</string>
     <string name="leitura_ultimas">Últimas leituras</string>
+    <string name="leitura_buscar">Buscar por EPC, nome ou cor</string>
+    <string name="leitura_busca_vazia">Nenhuma tag lida com essa busca.</string>
     <string name="leitura_pausada">Pausada</string>
     <string name="leitura_lendo">Lendo</string>
     <string name="leitura_indisponivel_curto">Indisponível</string>
@@ -223,6 +225,8 @@
     <string name="pend_titulo">Pendências</string>
     <string name="pend_descricao">Tags lidas que ainda não têm item no catálogo. Toque numa tag para cadastrar ou ignorar.</string>
     <string name="pend_vazio">Nenhuma pendência. Todas as tags lidas já têm cadastro.</string>
+    <string name="pend_buscar">Buscar pelo EPC</string>
+    <string name="pend_busca_vazia">Nenhuma tag com esse EPC.</string>
     <string name="pend_erro">Não foi possível carregar as pendências</string>
     <string name="pend_resolver">Resolver</string>
     <string name="pend_cadastrar_item">Cadastrar item</string>
@@ -276,6 +280,11 @@
     <string name="localizar_melhor">Mais perto até agora: %1$d</string>
     <string name="localizar_frase">Quanto maior o número, mais perto do item.</string>
     <string name="localizar_procurando">Procurando o sinal... aproxime o coletor.</string>
+    <string name="localizar_sem_internet">Sem conexão com a internet</string>
+    <string name="localizar_sem_internet_desc">A localização continua pelo leitor, mas o catálogo não carrega até a conexão voltar.</string>
+    <string name="localizar_sinal_perdido">Sinal da tag perdido</string>
+    <string name="localizar_sinal_perdido_desc">Volte para onde o sinal estava mais forte e mova o coletor devagar.</string>
+    <string name="localizar_sem_sinal">Sem sinal</string>
     <string name="localizar_sem_itens">Nenhum item para escolher</string>
     <string name="localizar_muito_perto">Muito perto</string>
     <string name="localizar_perto">Perto</string>
