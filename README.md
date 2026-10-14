@@ -7,7 +7,7 @@ O projeto tem duas partes:
 - **API** (pasta raiz): FastAPI com banco PostgreSQL. Guarda o catalogo de itens, os usuarios, as leituras e as sessoes de inventario.
 - **Aplicativo** (pasta `app-android`): app Android nativo em Java, feito para o coletor Urovo DT50P. Faz login, leitura das tags, inventario, localizacao de item pelo sinal, catalogo, pendencias de cadastro, relatorios e painel.
 
-Desenvolvido por Marco Albuquerque.
+Desenvolvido por Marco Albuquerque e Ulysses Bomfim.
 
 ## O que precisa ter instalado
 
