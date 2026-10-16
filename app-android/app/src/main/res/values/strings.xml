@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Inventário TRI082</string>
+    <string name="app_name">TRI082 Inventário</string>
     <string name="acesso_restrito_admin">Acesso restrito ao Administrador.</string>
     <string name="titulo_painel">Painel</string>
     <string name="titulo_leitura">Leitura</string>
@@ -73,7 +73,7 @@
     <string name="catalogo_erro_carregar">Não foi possível carregar os itens</string>
     <string name="catalogo_erro_salvar">Não foi possível concluir a operação</string>
 
-    <string name="detalhe_voltar">Voltar para Catálogo</string>
+    <string name="detalhe_voltar">Voltar</string>
     <string name="detalhe_label_epc">EPC da tag</string>
     <string name="detalhe_label_categoria">Categoria</string>
     <string name="detalhe_label_tipo">Tipo</string>
@@ -86,7 +86,7 @@
     <string name="detalhe_confirmar_exclusao">Excluir este item?</string>
     <string name="detalhe_excluido">Item excluído</string>
 
-    <string name="form_voltar">Voltar para Catálogo</string>
+    <string name="form_voltar">Voltar</string>
     <string name="form_titulo_novo">Novo item</string>
     <string name="form_titulo_editar">Editar item</string>
     <string name="form_epc">EPC da tag</string>
@@ -196,7 +196,7 @@
         <item quantity="one">%1$d conta</item>
         <item quantity="other">%1$d contas</item>
     </plurals>
-    <string name="uf_voltar">Voltar para Usuários</string>
+    <string name="uf_voltar">Voltar</string>
     <string name="uf_titulo_novo">Novo usuário</string>
     <string name="uf_nome">Nome de usuário</string>
     <string name="uf_nome_hint">Ex.: joao.silva</string>
@@ -221,7 +221,7 @@
     <string name="uf_erro_propria">É preciso manter pelo menos um administrador ativo</string>
     <string name="uf_erro_salvar">Não foi possível salvar o usuário</string>
 
-    <string name="pend_voltar">Voltar para Painel</string>
+    <string name="pend_voltar">Voltar</string>
     <string name="pend_titulo">Pendências</string>
     <string name="pend_descricao">Tags lidas que ainda não têm item no catálogo. Toque numa tag para cadastrar ou ignorar.</string>
     <string name="pend_vazio">Nenhuma pendência. Todas as tags lidas já têm cadastro.</string>
@@ -243,7 +243,7 @@
         <item quantity="other">Lida %1$d vezes, última em %2$s</item>
     </plurals>
 
-    <string name="rel_voltar">Voltar para Inventário</string>
+    <string name="rel_voltar">Voltar</string>
     <string name="rel_titulo">Relatório</string>
     <string name="rel_titulo_numero">Relatório nº %1$d</string>
     <string name="rel_periodo">Início: %1$s\nFim: %2$s</string>
